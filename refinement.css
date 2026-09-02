@@ -5,13 +5,14 @@
 .product-nav{display:flex;align-items:center;gap:8px;margin-left:22px;white-space:nowrap}
 .product-tab{min-height:42px;padding:0 18px;border:1px solid var(--accent);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--accent-dark);background:transparent;transition:.18s ease}
 .product-tab:hover{background:var(--accent-soft);color:var(--accent-dark)}
-.product-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 6px 18px rgba(224,111,0,.14)}
+.product-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 6px 18px rgba(42,124,199,.18)}
 .secondary-nav{margin-left:auto;gap:18px;font-size:12px;font-weight:720;color:var(--muted)}
+.header-nav-enabled .nav .nav-product{display:none!important}
 .secondary-nav a{transition:color .18s ease}
 .secondary-nav a:hover{color:var(--ink)}
 .nav-actions{gap:12px}
 
-/* Orange is reserved for actions and active states */
+/* Blue is reserved for actions and active states */
 .eyebrow{color:var(--muted)}
 .eyebrow.light{color:rgba(255,255,255,.58)}
 .service-num{color:rgba(255,255,255,.62)}
@@ -30,10 +31,10 @@
 .service-grid-three .service-content{padding:30px}
 
 /* Parts becomes a separate business chapter */
-.parts-promo{padding:72px 0;background:var(--accent-soft);border-top:1px solid #f1ddc5;border-bottom:1px solid #f1ddc5}
+.parts-promo{padding:72px 0;background:var(--accent-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .parts-promo-grid{border-top:0;padding-top:0;align-items:center}
-.parts-promo-side{border-top-color:rgba(11,23,19,.16)}
-.parts-promo-item{border-bottom-color:rgba(11,23,19,.14)}
+.parts-promo-side{border-top-color:rgba(14,27,47,.16)}
+.parts-promo-item{border-bottom-color:rgba(14,27,47,.14)}
 .parts-inline-link{transition:color .18s ease,border-color .18s ease}
 .parts-inline-link:hover{color:var(--accent-dark);border-color:var(--accent-dark)}
 
