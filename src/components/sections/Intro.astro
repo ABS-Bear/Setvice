@@ -1,0 +1,27 @@
+---
+type Metric = { title: string; text: string };
+type Props = {
+  eyebrow: string;
+  title: string;
+  text: string;
+  metrics: Metric[];
+};
+
+const { eyebrow, title, text, metrics } = Astro.props;
+---
+<section class="intro">
+  <div class="container intro-grid">
+    <div>
+      <div class="eyebrow">{eyebrow}</div>
+      <h2 class="section-title">{title}</h2>
+    </div>
+    <div>
+      <p class="intro-copy">{text}</p>
+      <div class="intro-side" style="margin-top:32px">
+        {metrics.map((metric) => (
+          <div class="metric"><strong>{metric.title}</strong><span>{metric.text}</span></div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

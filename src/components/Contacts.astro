@@ -1,0 +1,10 @@
+---
+import Forms from '@/components/sections/Forms.astro';
+
+type Props = {
+  variant: 'service' | 'parts' | 'stationary';
+};
+
+const { variant } = Astro.props;
+---
+<Forms variant={variant} />

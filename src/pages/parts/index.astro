@@ -1,0 +1,103 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Contacts from '@/components/Contacts.astro';
+import MobileCta from '@/components/MobileCta.astro';
+import { settings } from '@/lib/content';
+
+const page = await settings<any>('parts-page');
+---
+<BaseLayout
+  activePath="/parts/"
+  pageKey="parts"
+  secondaryNav={[
+    { label: 'Как подбираем', href: '#how' },
+    { label: 'Группы', href: '#groups' },
+    { label: 'Контакты', href: '#request' }
+  ]}
+  ctaText="Подобрать запчасть"
+  pageScript="parts.js"
+>
+  <main>
+    <section class="parts-hero">
+      <div class="container parts-hero-grid">
+        <div>
+          <div class="eyebrow light">{page.hero.eyebrow}</div>
+          <h1>{page.hero.title}</h1>
+          <p>{page.hero.text}</p>
+          <div class="hero-actions">
+            <a class="btn btn-accent" href="#request" data-mode="part">{page.hero.primaryCta}</a>
+            <a class="btn btn-outline" href="#request" data-mode="install">{page.hero.secondaryCta}</a>
+          </div>
+          <div class="parts-hero-meta">
+            {(page.hero.meta as any[]).map((item: any) => (
+              <div><strong>{item.title}</strong><span>{item.text}</span></div>
+            ))}
+          </div>
+        </div>
+        <div class="parts-hero-panel">
+          <div class="parts-panel-kicker">{page.hero.panel.kicker}</div>
+          <h2>{page.hero.panel.title}</h2>
+          <div class="parts-option-list">
+            {(page.hero.panel.options as string[]).map((option: string) => (
+              <a href="#request" data-mode="part" data-hint={option}>{option} <span>→</span></a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="parts-how" id="how">
+      <div class="container">
+        <div class="eyebrow">{page.how.eyebrow}</div>
+        <h2 class="section-title">{page.how.title}</h2>
+        <div class="parts-steps">
+          {(page.how.steps as any[]).map((step: any) => (
+            <article><b>{step.number}</b><h3>{step.title}</h3><p>{step.text}</p></article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="parts-groups" id="groups">
+      <div class="container">
+        <div class="parts-groups-head">
+          <div>
+            <div class="eyebrow">{page.groups.eyebrow}</div>
+            <h2 class="section-title">{page.groups.title}</h2>
+          </div>
+          <p class="section-lead">{page.groups.lead}</p>
+        </div>
+        <div class="parts-groups-grid">
+          {(page.groups.items as string[]).map((item: string) => <div>{item}</div>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="parts-stock">
+      <div class="container parts-stock-grid">
+        <div>
+          <div class="eyebrow">{page.stock.eyebrow}</div>
+          <h2 class="section-title">{page.stock.title}</h2>
+        </div>
+        <div>
+          <p class="section-lead">{page.stock.lead}</p>
+          <a class="parts-stock-link" href="#request" data-mode="part">{page.stock.cta} →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="parts-install">
+      <div class="container parts-install-grid">
+        <div>
+          <div class="eyebrow light">{page.install.eyebrow}</div>
+          <h2 class="section-title">{page.install.title}</h2>
+          <p>{page.install.text}</p>
+        </div>
+        <a class="btn btn-accent" href="#request" data-mode="install">{page.install.cta}</a>
+      </div>
+    </section>
+
+    <Contacts variant="parts" />
+  </main>
+  <MobileCta variant="parts" />
+</BaseLayout>

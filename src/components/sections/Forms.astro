@@ -1,0 +1,70 @@
+---
+import { settings } from '@/lib/content';
+
+type Props = {
+  variant: 'service' | 'parts' | 'stationary';
+};
+
+const { variant } = Astro.props;
+const contacts = await settings<any>('contacts');
+const forms = await settings<any>('forms');
+const data = forms[variant];
+---
+{variant === 'parts' ? (
+  <section class="parts-request" id="request">
+    <div class="container cta-grid">
+      <div>
+        <div class="eyebrow light">{data.eyebrow}</div>
+        <h2 class="section-title">{data.title}</h2>
+        <p class="cta-copy">{data.copy}</p>
+        <a class="cta-phone" href={contacts.phoneHref}>{contacts.phoneDisplay}</a>
+      </div>
+      <form class="form" id="partsForm">
+        <input type="hidden" name="mode" id="partsMode" value="Только запчасть" />
+        <div class="mode-switch" role="group" aria-label="Тип заявки">
+          <button type="button" class="mode-btn active" data-mode="part">Только запчасть</button>
+          <button type="button" class="mode-btn" data-mode="install">Запчасть + установка</button>
+        </div>
+        <input class="field" name="name" placeholder="Ваше имя" />
+        <input class="field" name="phone" type="tel" required placeholder="Телефон *" />
+        <input class="field" name="machine" placeholder="Марка / модель техники" />
+        <input class="field" name="article" placeholder="Артикул, если известен" />
+        <textarea class="field" name="part" id="partRequest" placeholder="Какая запчасть нужна?"></textarea>
+        <label class="field upload-field">Добавить фото детали / шильдика<input type="file" accept="image/*" multiple hidden /></label>
+        <div class="form-row">
+          <div class="consent">Отправляя форму, вы соглашаетесь на обработку персональных данных.</div>
+          <button class="btn btn-accent" type="submit">{data.button}</button>
+        </div>
+        <div class="status" id="partsStatus">{data.initialStatus}</div>
+      </form>
+    </div>
+  </section>
+) : (
+  <section class="cta" id="request">
+    <div class="container cta-grid">
+      <div>
+        <div class="eyebrow light">{data.eyebrow}</div>
+        <h2 class="section-title">{data.title}</h2>
+        <p class="cta-copy">{data.copy}</p>
+        <a class="cta-phone" href={contacts.phoneHref}>{contacts.phoneDisplay}</a>
+      </div>
+      <form class="form" id="leadForm">
+        <input type="hidden" name="kind" value={variant === 'stationary' ? 'stationary-service' : 'service'} />
+        <input class="field" name="name" placeholder="Ваше имя" />
+        <input class="field" name="phone" type="tel" required placeholder="Телефон *" />
+        <input class="field" name="machine" placeholder="Марка / модель техники" />
+        <input class="field" name="location" placeholder="Где находится техника?" />
+        <textarea class="field" name="issue" placeholder="Что произошло?"></textarea>
+        <label class="field" style="display:flex;align-items:center;cursor:pointer;color:rgba(255,255,255,.58)">
+          Добавить фото / видео
+          <input type="file" accept="image/*,video/*" multiple hidden />
+        </label>
+        <div class="form-row">
+          <div class="consent">Отправляя форму, вы соглашаетесь на обработку персональных данных.</div>
+          <button class="btn btn-accent" type="submit">{data.button}</button>
+        </div>
+        <div class="status" id="status">{data.initialStatus}</div>
+      </form>
+    </div>
+  </section>
+)}

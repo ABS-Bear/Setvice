@@ -1,0 +1,55 @@
+---
+import { analyticsScript } from '@/lib/analytics';
+import { settings } from '@/lib/content';
+import { withBase } from '@/lib/paths';
+
+type Props = {
+  pageScript?: string;
+};
+
+const { pageScript } = Astro.props;
+const contacts = await settings<any>('contacts');
+const integrations = await settings<any>('integrations');
+const scriptConfig = {
+  brand: contacts.brand,
+  siteUrl: contacts.siteUrl,
+  servicePath: withBase('/'),
+  partsPath: withBase('/parts/'),
+  phone: {
+    display: contacts.phoneDisplay,
+    href: contacts.phoneHref
+  },
+  leadApiUrl: integrations.leadEndpoint,
+  crmCallbackUrl: integrations.leadEndpoint,
+  area: contacts.area,
+  media: {
+    logo: withBase('/abservice-logo.png'),
+    hero: withBase('/media/hero-abservice.jpg'),
+    diagnostics: withBase('/media/diag-repair-abservice.jpg'),
+    fieldService: withBase('/media/field-service-abservice.jpg'),
+    closeup: withBase('/media/closeup-service-abservice.jpg'),
+    team: withBase('/media/team-abservice.jpg')
+  }
+};
+const commonScript = withBase('/scripts/abservice-common.js');
+const pageScriptUrl = pageScript ? withBase(`/scripts/${pageScript}`) : '';
+---
+<script is:inline define:vars={{ scriptConfig }}>
+  window.ABServiceConfig = scriptConfig;
+</script>
+<script is:inline set:html={analyticsScript(integrations.analytics)} />
+<script is:inline define:vars={{ commonScript, pageScriptUrl }}>
+  (async () => {
+    const load = (src) => new Promise((resolve, reject) => {
+      if (!src) return resolve();
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.body.appendChild(script);
+    });
+
+    await load(commonScript);
+    await load(pageScriptUrl);
+  })();
+</script>

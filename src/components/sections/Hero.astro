@@ -1,0 +1,57 @@
+---
+import { withBase } from '@/lib/paths';
+
+type Meta = { title: string; text: string };
+type Props = {
+  variant?: 'service' | 'parts' | 'stationary';
+  eyebrow: string;
+  title: string;
+  text: string;
+  primaryCta: string;
+  secondaryCta: string;
+  secondaryHref?: string;
+  photoLabel?: string;
+  meta: Meta[];
+};
+
+const {
+  variant = 'service',
+  eyebrow,
+  title,
+  text,
+  primaryCta,
+  secondaryCta,
+  secondaryHref = '#request',
+  photoLabel,
+  meta
+} = Astro.props;
+---
+{variant === 'parts' ? (
+  <section class="parts-hero">
+    <div class="container parts-hero-grid">
+      <slot />
+    </div>
+  </section>
+) : (
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow light">{eyebrow}</div>
+        <h1>{title}</h1>
+        <p>{text}</p>
+        <div class="hero-actions">
+          <a class="btn btn-accent" href="#request">{primaryCta}</a>
+          <a class="btn btn-outline" href={withBase(secondaryHref)} data-photo={secondaryHref === '#request' ? true : undefined}>{secondaryCta}</a>
+        </div>
+        <div class="hero-meta">
+          {meta.map((item) => (
+            <div><strong>{item.title}</strong>{item.text}</div>
+          ))}
+        </div>
+      </div>
+      <div class="hero-photo" style={`background-image:linear-gradient(180deg,rgba(14,27,47,.02),rgba(14,27,47,.18)),url(${withBase('/media/hero-abservice.jpg')})`}>
+        {photoLabel && <span class="photo-label">{photoLabel}</span>}
+      </div>
+    </div>
+  </section>
+)}

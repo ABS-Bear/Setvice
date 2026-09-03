@@ -1,0 +1,29 @@
+---
+import { withBase } from '@/lib/paths';
+
+type Item = { image: string; alt: string; caption: string };
+type Props = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  items: Item[];
+};
+
+const { eyebrow, title, lead, items } = Astro.props;
+---
+<section class="gallery" id="gallery">
+  <div class="container">
+    <div class="gallery-head">
+      <div>
+        <div class="eyebrow">{eyebrow}</div>
+        <h2 class="section-title">{title}</h2>
+      </div>
+      <p class="section-lead">{lead}</p>
+    </div>
+    <div class="gallery-grid">
+      {items.map((item) => (
+        <div class="gallery-item"><img src={withBase(item.image)} alt={item.alt} loading="lazy" /><span class="gallery-cap">{item.caption}</span></div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,21 @@
+---
+type Item = { number: string; title: string; text: string };
+type Props = {
+  eyebrow: string;
+  title: string;
+  items: Item[];
+};
+
+const { eyebrow, title, items } = Astro.props;
+---
+<section class="advantages" id="advantages">
+  <div class="container">
+    <div class="eyebrow">{eyebrow}</div>
+    <h2 class="section-title">{title}</h2>
+    <div class="adv-grid">
+      {items.map((item) => (
+        <article class="adv"><b>{item.number}</b><h3>{item.title}</h3><p>{item.text}</p></article>
+      ))}
+    </div>
+  </div>
+</section>

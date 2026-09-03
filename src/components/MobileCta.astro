@@ -1,0 +1,25 @@
+---
+import { settings } from '@/lib/content';
+import { withBase } from '@/lib/paths';
+
+type Props = {
+  variant: 'service' | 'parts' | 'stationary';
+};
+
+const { variant } = Astro.props;
+const contacts = await settings<any>('contacts');
+---
+<div class="mobile-cta">
+  <a class="mobile-side" href={contacts.phoneHref}>Позвонить</a>
+  {variant === 'parts' ? (
+    <>
+      <a class="mobile-main" href="#request" data-mode="part">Подобрать</a>
+      <a class="mobile-side" href="#request" data-mode="install">+ установка</a>
+    </>
+  ) : (
+    <>
+      <a class="mobile-main" href="#request">{variant === 'stationary' ? 'Обсудить' : 'Вызвать сервис'}</a>
+      <a class="mobile-side" href={variant === 'stationary' ? withBase('/') : '#request'} data-photo={variant === 'service' ? true : undefined}>{variant === 'stationary' ? 'Сервис' : 'Фото'}</a>
+    </>
+  )}
+</div>

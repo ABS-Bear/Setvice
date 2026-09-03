@@ -1,0 +1,19 @@
+---
+type Price = { label: string; value: string };
+type Props = {
+  intro: string;
+  items: Price[];
+};
+
+const { intro, items } = Astro.props;
+---
+<section class="price-strip" aria-label="Стоимость">
+  <div class="container price-grid">
+    <div class="price-cell">
+      <div class="price-copy"><strong style="color:var(--ink)">Стоимость выезда</strong><br />{intro}</div>
+    </div>
+    {items.map((item) => (
+      <div class="price-cell"><div class="price-label">{item.label}</div><div class="price-val">{item.value}</div></div>
+    ))}
+  </div>
+</section>

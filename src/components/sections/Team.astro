@@ -1,0 +1,23 @@
+---
+import { serviceTeam } from '@/lib/content';
+import { withBase } from '@/lib/paths';
+
+const team = await serviceTeam();
+---
+<section class="team" id="team">
+  <div class="container">
+    <div class="team-grid">
+      <div class="team-photo" role="img" aria-label="Сервисная команда на объекте" style={`background:url(${withBase(team.image)}) center/cover no-repeat`}></div>
+      <div class="team-copy">
+        <div class="eyebrow light">{team.subtitle}</div>
+        <h2 class="section-title">{team.title}</h2>
+        <p>{team.description}</p>
+        <div class="team-points">
+          {team.points.map((point) => (
+            <div class="team-point"><strong>{point.title}</strong><span>{point.text}</span></div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

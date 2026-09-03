@@ -1,0 +1,43 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Intro from '@/components/sections/Intro.astro';
+import Services from '@/components/sections/Services.astro';
+import PartsPromo from '@/components/sections/PartsPromo.astro';
+import PriceStrip from '@/components/sections/PriceStrip.astro';
+import Team from '@/components/sections/Team.astro';
+import Advantages from '@/components/sections/Advantages.astro';
+import Gallery from '@/components/sections/Gallery.astro';
+import Contacts from '@/components/Contacts.astro';
+import MobileCta from '@/components/MobileCta.astro';
+import Hero from '@/components/sections/Hero.astro';
+import { settings } from '@/lib/content';
+
+const page = await settings<any>('home-page');
+const prices = await settings<any>('prices');
+const advantages = await settings<any>('advantages');
+const gallery = await settings<any>('gallery');
+---
+<BaseLayout
+  activePath="/"
+  pageKey="home"
+  secondaryNav={[
+    { label: 'Команда', href: '#team' },
+    { label: 'Как работаем', href: '#advantages' },
+    { label: 'Контакты', href: '#request' }
+  ]}
+  ctaText="Вызвать сервис"
+  pageScript="site.js"
+>
+  <main id="top">
+    <Hero {...page.hero} />
+    <Intro {...page.intro} />
+    <Services {...page.services} />
+    <PartsPromo {...page.partsPromo} />
+    <PriceStrip {...prices} />
+    <Team />
+    <Advantages {...advantages} />
+    <Gallery {...gallery} />
+    <Contacts variant="service" />
+  </main>
+  <MobileCta variant="service" />
+</BaseLayout>

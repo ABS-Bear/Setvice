@@ -1,0 +1,18 @@
+---
+import { settings } from '@/lib/content';
+
+type Props = {
+  activePath: string;
+};
+
+const { activePath } = Astro.props;
+const contacts = await settings<any>('contacts');
+const context = activePath === '/parts/' ? 'Запчасти для спецтехники' : activePath === '/stationary-service/' ? 'Стационарный сервис' : 'Выездной сервис';
+---
+<footer>
+  <div class="container footer-grid">
+    <span>{contacts.brand} · {context} · {contacts.area}</span>
+    <span>{contacts.phoneDisplay} · {contacts.legalDetails}</span>
+    {activePath === '/' && <span class="credits">Фото: <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></span>}
+  </div>
+</footer>

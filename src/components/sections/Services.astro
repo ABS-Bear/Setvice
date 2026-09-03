@@ -1,0 +1,37 @@
+---
+import { services } from '@/lib/content';
+import { withBase } from '@/lib/paths';
+
+type Props = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+};
+
+const { eyebrow, title, lead } = Astro.props;
+const items = await services();
+---
+<section class="services" id="services">
+  <div class="container">
+    <div class="services-head">
+      <div>
+        <div class="eyebrow">{eyebrow}</div>
+        <h2 class="section-title">{title}</h2>
+      </div>
+      <p class="section-lead">{lead}</p>
+    </div>
+    <div class="service-grid service-grid-three">
+      {items.map((item) => (
+        <article class="service-card">
+          <img src={withBase(item.data.image)} alt={item.data.alt} loading="lazy" />
+          <div class="service-content">
+            <div class="service-num">{item.data.label}</div>
+            <h3>{item.data.title}</h3>
+            <p>{item.data.summary}</p>
+            <a class="service-link" href="#request">{item.data.cta} →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

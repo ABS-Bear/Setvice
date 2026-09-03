@@ -1,0 +1,146 @@
+backend:
+  name: github
+  repo: alecmonopoly84-hue/ArcticBear
+  branch: main
+
+local_backend: true
+
+media_folder: public/media
+public_folder: /media
+
+publish_mode: simple
+
+collections:
+  - name: settings
+    label: Настройки сайта
+    files:
+      - label: Контакты
+        name: contacts
+        file: src/content/settings/contacts.json
+        fields:
+          - { label: Бренд, name: brand, widget: string }
+          - { label: Регион, name: area, widget: string }
+          - { label: Телефон на сайте, name: phoneDisplay, widget: string }
+          - { label: Ссылка телефона, name: phoneHref, widget: string }
+          - { label: Юридические реквизиты, name: legalDetails, widget: string }
+          - { label: URL сайта, name: siteUrl, widget: string }
+      - label: Цены
+        name: prices
+        file: src/content/settings/prices.json
+        fields:
+          - { label: Пояснение, name: intro, widget: text }
+          - label: Позиции
+            name: items
+            widget: list
+            fields:
+              - { label: Название, name: label, widget: string }
+              - { label: Значение, name: value, widget: string }
+      - label: SEO
+        name: seo
+        file: src/content/settings/seo.json
+        fields:
+          - { label: Название сайта, name: siteName, widget: string }
+          - { label: Локаль, name: locale, widget: string }
+          - { label: Изображение по умолчанию, name: defaultImage, widget: image }
+          - { label: Страницы, name: pages, widget: object }
+      - label: Интеграции
+        name: integrations
+        file: src/content/settings/integrations.json
+        fields:
+          - { label: Public endpoint заявок, name: leadEndpoint, widget: string }
+          - { label: Аналитика, name: analytics, widget: object }
+          - { label: Bitrix24, name: bitrix24, widget: object }
+      - label: Главная
+        name: home_page
+        file: src/content/settings/home-page.json
+        fields:
+          - { label: Hero, name: hero, widget: object }
+          - { label: Вводный блок, name: intro, widget: object }
+          - { label: Сервис, name: services, widget: object }
+          - { label: Промо запчастей, name: partsPromo, widget: object }
+      - label: Запчасти
+        name: parts_page
+        file: src/content/settings/parts-page.json
+        fields:
+          - { label: Hero, name: hero, widget: object }
+          - { label: Как подбираем, name: how, widget: object }
+          - { label: Группы, name: groups, widget: object }
+          - { label: Наличие, name: stock, widget: object }
+          - { label: Установка, name: install, widget: object }
+      - label: Стационарный сервис
+        name: stationary_page
+        file: src/content/settings/stationary-page.json
+        fields:
+          - { label: Hero, name: hero, widget: object }
+          - { label: Контент, name: content, widget: object }
+      - label: Формы
+        name: forms
+        file: src/content/settings/forms.json
+        fields:
+          - { label: Сервис, name: service, widget: object }
+          - { label: Запчасти, name: parts, widget: object }
+          - { label: Стационарный сервис, name: stationary, widget: object }
+      - label: Преимущества
+        name: advantages
+        file: src/content/settings/advantages.json
+        fields:
+          - { label: Надзаголовок, name: eyebrow, widget: string }
+          - { label: Заголовок, name: title, widget: string }
+          - { label: Элементы, name: items, widget: list }
+      - label: Галерея
+        name: gallery
+        file: src/content/settings/gallery.json
+        fields:
+          - { label: Надзаголовок, name: eyebrow, widget: string }
+          - { label: Заголовок, name: title, widget: string }
+          - { label: Текст, name: lead, widget: text }
+          - { label: Фото, name: items, widget: list }
+  - name: business-directions
+    label: Направления бизнеса
+    folder: src/content/business-directions
+    extension: json
+    create: true
+    fields:
+      - { label: Название, name: title, widget: string }
+      - { label: Название в меню, name: navLabel, widget: string }
+      - { label: Ссылка, name: href, widget: string }
+      - { label: Статус, name: status, widget: select, options: [active, prepared, planned] }
+      - { label: Тип заявки, name: leadKind, widget: string }
+      - { label: Описание, name: summary, widget: text }
+      - { label: Порядок, name: order, widget: number }
+  - name: services
+    label: Услуги
+    folder: src/content/services
+    extension: json
+    create: true
+    fields:
+      - { label: Название, name: title, widget: string }
+      - { label: Метка, name: label, widget: string }
+      - { label: Описание, name: summary, widget: text }
+      - { label: Фото, name: image, widget: image }
+      - { label: Alt-текст, name: alt, widget: string }
+      - { label: CTA, name: cta, widget: string }
+      - { label: Порядок, name: order, widget: number }
+  - name: team
+    label: Команда
+    folder: src/content/team
+    extension: json
+    create: true
+    fields:
+      - { label: Заголовок, name: title, widget: string }
+      - { label: Надзаголовок, name: subtitle, widget: string }
+      - { label: Описание, name: description, widget: text }
+      - { label: Фото, name: image, widget: image }
+      - { label: Пункты, name: points, widget: list }
+  - name: articles
+    label: SEO-статьи
+    folder: src/content/articles
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Заголовок, name: title, widget: string }
+      - { label: SEO-описание, name: description, widget: text }
+      - { label: Статус, name: status, widget: select, options: [draft, published], default: draft }
+      - { label: Дата публикации, name: publishDate, widget: datetime, required: false }
+      - { label: Автор, name: author, widget: string, default: "Маркетолог ABService" }
+      - { label: Текст статьи, name: body, widget: markdown }

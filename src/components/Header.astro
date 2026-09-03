@@ -1,0 +1,41 @@
+---
+import { businessDirections, settings } from '@/lib/content';
+import { withBase } from '@/lib/paths';
+
+type Props = {
+  activePath: string;
+  secondaryNav: { label: string; href: string }[];
+  ctaText?: string;
+  ctaHref?: string;
+};
+
+const { activePath, secondaryNav, ctaText = 'Вызвать сервис', ctaHref = '#request' } = Astro.props;
+const contacts = await settings<any>('contacts');
+const directions = await businessDirections();
+---
+<header>
+  <div class="container nav-wrap">
+    <a class="brand" href={withBase('/')} aria-label={contacts.brand}>
+      <img class="brand-logo" src={withBase('/abservice-logo.png')} alt={contacts.brand} />
+      <span class="brand-text">{contacts.brand}<small>выездной сервис</small></span>
+    </a>
+    <nav class="product-nav" aria-label="Основные направления">
+      {directions.map((direction) => (
+        <a
+          class:list={['product-tab', direction.data.href === activePath && 'active']}
+          href={withBase(direction.data.href)}
+          aria-current={direction.data.href === activePath ? 'page' : undefined}
+        >
+          {direction.data.navLabel}
+        </a>
+      ))}
+    </nav>
+    <nav class="nav secondary-nav" aria-label="Дополнительная навигация">
+      {secondaryNav.map((item) => <a href={withBase(item.href)}>{item.label}</a>)}
+    </nav>
+    <div class="nav-actions">
+      <a class="phone" href={contacts.phoneHref}>{contacts.phoneDisplay}</a>
+      <a class="btn btn-dark" href={ctaHref}>{ctaText}</a>
+    </div>
+  </div>
+</header>

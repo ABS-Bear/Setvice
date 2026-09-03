@@ -1,0 +1,17 @@
+{
+  "leadEndpoint": "/api/lead",
+  "analytics": {
+    "yandexMetrikaId": "TBD",
+    "trackLeadEvents": true
+  },
+  "bitrix24": {
+    "enabled": false,
+    "status": "stub",
+    "envNames": [
+      "BITRIX24_ENABLED",
+      "BITRIX24_WEBHOOK_URL",
+      "BITRIX24_ASSIGNED_BY_ID",
+      "BITRIX24_CATEGORY_ID"
+    ]
+  }
+}

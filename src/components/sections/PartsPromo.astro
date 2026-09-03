@@ -1,0 +1,33 @@
+---
+import { withBase } from '@/lib/paths';
+
+type Item = { title: string; text: string };
+type Props = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  primaryCta: string;
+  secondaryCta: string;
+  items: Item[];
+};
+
+const { eyebrow, title, lead, primaryCta, secondaryCta, items } = Astro.props;
+---
+<section class="parts-promo" id="parts">
+  <div class="container parts-promo-grid">
+    <div>
+      <div class="eyebrow">{eyebrow}</div>
+      <h2 class="section-title">{title}</h2>
+      <p class="section-lead">{lead}</p>
+      <div class="parts-promo-actions">
+        <a class="btn btn-dark" href={withBase('/parts/')}>{primaryCta}</a>
+        <a class="parts-inline-link" href={withBase('/parts/?service=install')}>{secondaryCta} →</a>
+      </div>
+    </div>
+    <div class="parts-promo-side">
+      {items.map((item) => (
+        <div class="parts-promo-item"><strong>{item.title}</strong><span>{item.text}</span></div>
+      ))}
+    </div>
+  </div>
+</section>

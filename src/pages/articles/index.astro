@@ -1,0 +1,44 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import MobileCta from '@/components/MobileCta.astro';
+import { getCollection } from 'astro:content';
+import { withBase } from '@/lib/paths';
+
+const articles = await getCollection('articles');
+---
+<BaseLayout
+  activePath="/articles/"
+  pageKey="articles"
+  secondaryNav={[
+    { label: 'Сервис', href: '/' },
+    { label: 'Запчасти', href: '/parts/' }
+  ]}
+  ctaText="Вызвать сервис"
+>
+  <main>
+    <section class="intro">
+      <div class="container intro-grid">
+        <div>
+          <div class="eyebrow">SEO-статьи</div>
+          <h1 class="section-title">Раздел для будущих материалов</h1>
+        </div>
+        <div>
+          <p class="intro-copy">Маркетолог сможет готовить SEO-статьи через CMS. Сейчас добавлена только безопасная техническая структура без выдуманных бизнес-фактов.</p>
+        </div>
+      </div>
+    </section>
+    <section class="parts-groups">
+      <div class="container">
+        <div class="parts-groups-grid">
+          {articles.map((article) => (
+            <a class="parts-groups-grid-link" href={withBase(`/articles/${article.slug}/`)}>
+              <strong>{article.data.title}</strong>
+              <span>{article.data.status === 'draft' ? 'Черновик' : 'Опубликовано'}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+  <MobileCta variant="service" />
+</BaseLayout>
