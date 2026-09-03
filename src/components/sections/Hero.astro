@@ -11,6 +11,7 @@ type Props = {
   secondaryCta: string;
   secondaryHref?: string;
   photoLabel?: string;
+  showPhoto?: boolean;
   meta: Meta[];
 };
 
@@ -23,6 +24,7 @@ const {
   secondaryCta,
   secondaryHref = '#request',
   photoLabel,
+  showPhoto = variant !== 'stationary',
   meta
 } = Astro.props;
 ---
@@ -34,7 +36,7 @@ const {
   </section>
 ) : (
   <section class="hero">
-    <div class="hero-grid">
+    <div class:list={['hero-grid', !showPhoto && 'hero-no-photo']}>
       <div class="hero-copy">
         <div class="eyebrow light">{eyebrow}</div>
         <h1>{title}</h1>
@@ -49,9 +51,11 @@ const {
           ))}
         </div>
       </div>
-      <div class="hero-photo" style={`background-image:linear-gradient(180deg,rgba(14,27,47,.02),rgba(14,27,47,.18)),url(${withBase('/media/hero-abservice.jpg')})`}>
-        {photoLabel && <span class="photo-label">{photoLabel}</span>}
-      </div>
+      {showPhoto && (
+        <div class="hero-photo" style={`background-image:linear-gradient(180deg,rgba(14,27,47,.02),rgba(14,27,47,.18)),url(${withBase('/media/hero-abservice.jpg')})`}>
+          {photoLabel && <span class="photo-label">{photoLabel}</span>}
+        </div>
+      )}
     </div>
   </section>
 )}

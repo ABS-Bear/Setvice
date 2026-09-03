@@ -4,6 +4,9 @@ export function withBase(path: string) {
     return path;
   }
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  if (base && (path === base || path.startsWith(`${base}/`))) {
+    return path;
+  }
   if (path === '/') return `${base}/`;
   return `${base}${path.startsWith('/') ? path : `/${path}`}`;
 }

@@ -35,7 +35,7 @@ const directions = await businessDirections();
     </nav>
     <div class="nav-actions">
       <a class="phone" href={contacts.phoneHref}>{contacts.phoneDisplay}</a>
-      <a class="btn btn-dark" href={ctaHref}>{ctaText}</a>
+      <a class="btn btn-dark" href={withBase(ctaHref)}>{ctaText}</a>
     </div>
   </div>
 </header>

@@ -1,25 +1,29 @@
 # Admin Guide
 
-Decap CMS is prepared at `/admin/` for the company marketing user.
+Decap CMS is prepared under the site base path (for example `/ArcticBear/admin/`) for local editing and future production editing. Production authentication is not enabled in Gate 3A. Admin is noindex and disallowed in robots with the same base-prefixed paths.
 
 ## What Marketing Can Change
 
-- Contacts and phone text.
-- Prices shown on the service page.
+- Contacts, phone text and public site URL.
+- Legacy home price strip in `settings/prices.json` (kept for the existing homepage strip).
+- Optional `price` / `priceNote` on individual service cards (CMS-level model; do not invent stationary prices).
 - Main page text blocks.
 - Parts page text blocks.
-- Stationary service page placeholders.
-- Service cards.
-- Business directions.
-- Team block.
-- Gallery photos and captions.
+- Stationary service approved scope copy.
+- Articles landing copy (`settings/articles-page.json`).
+- Form text.
+- Service cards (add/delete).
+- Business directions (three directions stay separated).
+- Team block (simple).
+- Gallery photos and captions (reorder/add/remove).
 - SEO page metadata.
-- SEO articles.
+- Materials/articles: published status, title, slug, date, description, optional cover, body, SEO title/description.
 
 ## What Marketing Must Not Manage In CMS
 
 - Telegram bot token.
-- Bitrix24 webhook.
+- Telegram CRM chat ID, internal ID or bot webhook.
+- Bitrix24 webhook or OAuth credentials.
 - Hosting credentials.
 - GitHub permissions.
 - Domain DNS.
@@ -27,20 +31,39 @@ Decap CMS is prepared at `/admin/` for the company marketing user.
 
 ## Articles
 
-SEO articles live in `src/content/articles/`.
+Materials live in `src/content/articles/`.
 
-The included article is a draft structure placeholder, not a published business article. Replace it with owner-approved facts before publication.
+Only entries with `status: published` are listed, generated and added to the sitemap. Drafts stay in the repository for CMS/template work, but are not published as article pages.
+
+Cover is optional for unpublished placeholders. Published articles use SEO title/description fallbacks and cover as Open Graph image when present.
+
+The included `gate2b-structure-placeholder.md` file is a draft structure placeholder. Replace it with owner-approved facts before switching any article to `published`.
 
 ## Stationary Service
 
-The page is prepared, but business facts are still TBD:
+The `/stationary-service/` page uses the approved Gate 3A scope:
 
-- exact service list;
-- address or logistics;
-- prices;
-- timelines;
-- warranties;
-- SLA;
-- real photos.
+- Moscow;
+- launch in progress;
+- commercial wheeled transport;
+- diagnosis, maintenance, repair, complex/aggregate repair;
+- prices forming; mixed pricing model;
+- soft link to `/parts/`;
+- primary CTA `Записаться на диагностику`.
 
-Do not publish invented values in those fields.
+Do not publish logistics, route, timelines, guarantee wording, address or SLA claims, and do not attach stock photos to this page.
+
+## Prices Model
+
+- `settings/prices.json` is the **legacy** source for the existing home price strip. Gate 3A keeps it unchanged.
+- New CMS pricing edits should use optional service-level `price` / `priceNote`.
+- Do not invent or display fabricated stationary prices.
+
+## Production CMS Auth Still Needed
+
+Before enabling Decap CMS for the marketer in production, decide and configure:
+
+- GitHub OAuth provider or Decap-compatible auth gateway;
+- final production branch;
+- editor GitHub accounts and repository permissions;
+- whether editorial workflow is required or `publish_mode: simple` remains acceptable.

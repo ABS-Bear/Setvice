@@ -11,13 +11,15 @@
 npm run dev
 npm run lint
 npm run build
+npm run verify
 ```
 
 `npm run build` runs Astro checks before creating the static frontend in `dist/`.
+`npm run verify` is a dependency-free post-build check for internal links/assets/base paths and Gate 3A readiness assertions.
 
 ## Local Preview
 
-The Astro dev server serves the frontend. In local development, `/api/lead` may not exist unless the Vercel backend is run separately or `src/content/settings/integrations.json` points to the deployed Vercel Function.
+The Astro dev server serves the frontend. In Gate 3A, `src/content/settings/integrations.json` points forms to the deployed Telegram CRM endpoint, so local form tests can create real Telegram leads if the owner approves them.
 
 Do not submit real Telegram leads during visual QA unless the owner explicitly approves a live test.
 
@@ -32,4 +34,4 @@ Do not submit real Telegram leads during visual QA unless the owner explicitly a
 
 ## Branch Policy
 
-Gate 2B work happens on `gate2b-target-architecture-migration-2026-09-03`. Do not push, merge to main, or deploy production without separate confirmation.
+Gate 3A work happens on `gate3a-telegram-production-readiness-2026-09-03`. Do not push, merge to main, or deploy production without separate confirmation.

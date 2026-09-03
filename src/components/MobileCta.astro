@@ -4,9 +4,19 @@ import { withBase } from '@/lib/paths';
 
 type Props = {
   variant: 'service' | 'parts' | 'stationary';
+  requestHref?: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+  enablePhoto?: boolean;
 };
 
-const { variant } = Astro.props;
+const {
+  variant,
+  requestHref = '#request',
+  secondaryHref = variant === 'stationary' ? withBase('/') : '#request',
+  secondaryLabel = variant === 'stationary' ? 'Сервис' : 'Фото',
+  enablePhoto = variant === 'service' && requestHref === '#request'
+} = Astro.props;
 const contacts = await settings<any>('contacts');
 ---
 <div class="mobile-cta">
@@ -18,8 +28,8 @@ const contacts = await settings<any>('contacts');
     </>
   ) : (
     <>
-      <a class="mobile-main" href="#request">{variant === 'stationary' ? 'Обсудить' : 'Вызвать сервис'}</a>
-      <a class="mobile-side" href={variant === 'stationary' ? withBase('/') : '#request'} data-photo={variant === 'service' ? true : undefined}>{variant === 'stationary' ? 'Сервис' : 'Фото'}</a>
+      <a class="mobile-main" href={requestHref}>{variant === 'stationary' ? 'Записаться на диагностику' : 'Вызвать сервис'}</a>
+      <a class="mobile-side" href={secondaryHref} data-photo={enablePhoto ? true : undefined}>{secondaryLabel}</a>
     </>
   )}
 </div>

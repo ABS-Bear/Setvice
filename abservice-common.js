@@ -2,10 +2,6 @@
   const config=window.ABServiceConfig||{};
   const hasOwn=(obj,key)=>Object.prototype.hasOwnProperty.call(obj,key);
   const leadApiUrl=hasOwn(config,'leadApiUrl')?config.leadApiUrl:'https://abservice-leads-v2.vercel.app/api/lead';
-  const crmCallbackUrl=hasOwn(config,'crmCallbackUrl')?config.crmCallbackUrl:leadApiUrl;
-
-  const activateCrmWebhook=()=>crmCallbackUrl?fetch(crmCallbackUrl,{method:'GET'}).catch(()=>{}):Promise.resolve();
-  activateCrmWebhook();
 
   function ensureProductNavStyles(){
     if(document.getElementById('abservice-product-nav')) return;
@@ -88,14 +84,12 @@
     const response=await fetch(leadApiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const result=await response.json().catch(()=>({}));
     if(!response.ok) throw new Error(result.error||`HTTP ${response.status}`);
-    activateCrmWebhook();
     return result;
   }
 
   window.ABService={
     config,
     leadApiUrl,
-    activateCrmWebhook,
     collectAttachments,
     ensureProductNavStyles,
     postLead

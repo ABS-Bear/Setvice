@@ -28,6 +28,13 @@ const items = await services();
             <div class="service-num">{item.data.label}</div>
             <h3>{item.data.title}</h3>
             <p>{item.data.summary}</p>
+            {(item.data.price || item.data.priceNote) && (
+              <p class="service-price">
+                {item.data.price}
+                {item.data.price && item.data.priceNote ? ' · ' : ''}
+                {item.data.priceNote}
+              </p>
+            )}
             <a class="service-link" href="#request">{item.data.cta} →</a>
           </div>
         </article>

@@ -14,7 +14,9 @@ const services = defineCollection({
     image: z.string(),
     alt: z.string(),
     cta: z.string(),
-    order: z.number()
+    order: z.number(),
+    price: z.string().optional(),
+    priceNote: z.string().optional()
   })
 });
 
@@ -52,7 +54,9 @@ const articles = defineCollection({
     description: z.string(),
     status: z.enum(['draft', 'published']),
     publishDate: z.date().optional(),
-    author: z.string()
+    cover: z.string().optional(),
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional()
   })
 });
 

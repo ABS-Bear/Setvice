@@ -1,22 +1,26 @@
 import { sendLeadToBitrix24 } from './lib/bitrix24-adapter.js';
 
-const CHAT='-1004382574358';
-const INTERNAL='4382574358';
+const CHAT=process.env.TELEGRAM_CHAT_ID||'';
+const INTERNAL=process.env.TELEGRAM_INTERNAL_ID||'';
 const WEBHOOK='https://abservice-leads-v2.vercel.app/api/lead';
 const MAX_ATTACH=2;
 const MAX_BYTES=1600000;
 const ORIGIN='https://alecmonopoly84-hue.github.io';
+const LOCAL_ORIGIN=/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 const SEP='\n\n────────\n';
 const PREFIX='CRMSTATE:';
 const MAX=12;
 
+const allowedOrigin=origin=>origin===ORIGIN||LOCAL_ORIGIN.test(String(origin||''));
+const corsOrigin=req=>{const origin=req.headers.get('origin')||'';return allowedOrigin(origin)?origin:''};
+const corsHeaders=req=>({'Access-Control-Allow-Origin':corsOrigin(req),'Access-Control-Allow-Methods':'GET,POST,OPTIONS','Access-Control-Allow-Headers':'Content-Type','Vary':'Origin'});
 const esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const name=u=>`${[u?.first_name,u?.last_name].filter(Boolean).join(' ')||'Сотрудник'}${u?.username?` @${u.username}`:''}`.slice(0,48);
 const userKey=u=>String(u?.id||'');
 const now=()=>new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date()).replace(',',' ·')+' МСК';
 const dateParts=()=>{const p=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Moscow',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()),g=t=>p.find(x=>x.type===t)?.value||'';return{y:+g('year'),m:+g('month'),d:+g('day')}};
 const periodKeys=()=>{const {y,m,d}=dateParts(),dt=new Date(Date.UTC(y,m-1,d)),wd=dt.getUTCDay()||7;dt.setUTCDate(dt.getUTCDate()+4-wd);const wy=dt.getUTCFullYear(),ys=new Date(Date.UTC(wy,0,1)),w=Math.ceil((((dt-ys)/86400000)+1)/7);return{d:`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`,w:`${wy}-W${String(w).padStart(2,'0')}`,mo:`${y}-${String(m).padStart(2,'0')}`}};
-const json=(req,body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json; charset=utf-8','Access-Control-Allow-Origin':req.headers.get('origin')===ORIGIN?ORIGIN:'','Access-Control-Allow-Methods':'GET,POST,OPTIONS','Access-Control-Allow-Headers':'Content-Type','Vary':'Origin'}});
+const json=(req,body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json; charset=utf-8',...corsHeaders(req)}});
 
 async function tg(token,method,payload){
   const r=await fetch(`https://api.telegram.org/bot${token}/${method}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
@@ -103,6 +107,6 @@ async function leadAction(token,cb,a){
 async function callback(token,cb){const id=cb?.id,a=String(cb?.data||'');if(!cb?.message||String(cb.message.chat?.id)!==CHAT){await answer(token,id,'Кнопка недоступна',true);return{ok:false}}let r;try{r=a.startsWith('crm:')?await crmAction(token,cb,a):await leadAction(token,cb,a)}catch(e){console.error(e);r={ok:false,error:String(e?.message||e)}}await answer(token,id,r.ok?'Готово':`Ошибка: ${r.error||'не удалось'}`,!r.ok);return r}
 async function command(token,m){if(String(m?.chat?.id)!==CHAT)return{ok:true};const [cmd,arg='']=String(m?.text||'').trim().split(/\s+/);if((cmd||'').split('@')[0].toLowerCase()!=='/report')return{ok:true};const c=await getCrm(token);if(!c.ok)return{ok:false,error:'CRM-пульт не найден'};const sc=['today','week','month'].includes(arg)?arg:'all';const r=await send(token,report(c.state,sc));return{ok:r.ok}}
 
-export async function GET(req){const token=process.env.TELEGRAM_BOT_TOKEN;if(!token)return json(req,{ok:false,error:'token missing'},503);const i=await install(token);const c=await getCrm(token);if(c.ok)await saveCrm(token,c.id,c.state);return json(req,{ok:i.ok,service:'ABService unified lead+CRM v4',crmV4:true,webhook:WEBHOOK,crm:c.ok,error:i.data?.description||null})}
-export function OPTIONS(req){return new Response(null,{status:204,headers:{'Access-Control-Allow-Origin':req.headers.get('origin')===ORIGIN?ORIGIN:'','Access-Control-Allow-Methods':'GET,POST,OPTIONS','Access-Control-Allow-Headers':'Content-Type','Vary':'Origin'}})}
-export async function POST(req){const o=req.headers.get('origin')||'';if(o&&o!==ORIGIN&&!o.startsWith('http://localhost:'))return json(req,{ok:false,error:'Origin not allowed'},403);const token=process.env.TELEGRAM_BOT_TOKEN;if(!token)return json(req,{ok:false,error:'token missing'},503);try{const b=await req.json();if(b.callback_query)return json(req,await callback(token,b.callback_query));if(b.message)return json(req,await command(token,b.message));const r=await submitLead(token,b);return json(req,r,r.status||200)}catch(e){console.error(e);return json(req,{ok:false,error:'request failed'},500)}}
+export async function GET(req){const token=process.env.TELEGRAM_BOT_TOKEN;if(!token||!CHAT||!INTERNAL)return json(req,{ok:false,error:'telegram config missing'},503);const i=await install(token);const c=await getCrm(token);if(c.ok)await saveCrm(token,c.id,c.state);return json(req,{ok:i.ok,service:'ABService unified lead+CRM v4',crmV4:true,webhook:WEBHOOK,crm:c.ok,error:i.data?.description||null})}
+export function OPTIONS(req){return new Response(null,{status:204,headers:corsHeaders(req)})}
+export async function POST(req){const o=req.headers.get('origin')||'';if(o&&!allowedOrigin(o))return json(req,{ok:false,error:'Origin not allowed'},403);const token=process.env.TELEGRAM_BOT_TOKEN;if(!token||!CHAT||!INTERNAL)return json(req,{ok:false,error:'telegram config missing'},503);try{const b=await req.json();if(b.callback_query)return json(req,await callback(token,b.callback_query));if(b.message)return json(req,await command(token,b.message));const r=await submitLead(token,b);return json(req,r,r.status||200)}catch(e){console.error(e);return json(req,{ok:false,error:'request failed'},500)}}

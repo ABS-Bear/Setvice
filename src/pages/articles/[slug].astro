@@ -2,9 +2,10 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import MobileCta from '@/components/MobileCta.astro';
 import { getCollection } from 'astro:content';
+import { withBase } from '@/lib/paths';
 
 export async function getStaticPaths() {
-  const articles = await getCollection('articles');
+  const articles = await getCollection('articles', ({ data }) => data.status === 'published');
   return articles.map((article) => ({
     params: { slug: article.slug },
     props: { article }
@@ -13,6 +14,9 @@ export async function getStaticPaths() {
 
 const { article } = Astro.props;
 const { Content } = await article.render();
+const title = article.data.seoTitle || `${article.data.title} — ABService`;
+const description = article.data.seoDescription || article.data.description;
+const canonicalPath = `/articles/${article.slug}/`;
 ---
 <BaseLayout
   activePath="/articles/"
@@ -22,16 +26,28 @@ const { Content } = await article.render();
     { label: 'Контакты', href: '/#request' }
   ]}
   ctaText="Вызвать сервис"
+  ctaHref="/#request"
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  ogType="article"
+  ogImagePath={article.data.cover}
 >
   <main>
     <article class="intro">
       <div class="container intro-grid">
         <div>
-          <div class="eyebrow">{article.data.status === 'draft' ? 'Черновик' : 'SEO-статья'}</div>
+          <div class="eyebrow">Материал</div>
           <h1 class="section-title">{article.data.title}</h1>
+          {article.data.publishDate && (
+            <p class="section-lead">{article.data.publishDate.toLocaleDateString('ru-RU')}</p>
+          )}
         </div>
         <div>
           <p class="section-lead">{article.data.description}</p>
+          {article.data.cover && (
+            <img class="article-cover" src={withBase(article.data.cover)} alt="" loading="lazy" />
+          )}
           <div class="article-body">
             <Content />
           </div>
@@ -39,5 +55,5 @@ const { Content } = await article.render();
       </div>
     </article>
   </main>
-  <MobileCta variant="service" />
+  <MobileCta variant="service" requestHref={withBase('/#request')} secondaryHref={withBase('/articles/')} secondaryLabel="Статьи" enablePhoto={false} />
 </BaseLayout>

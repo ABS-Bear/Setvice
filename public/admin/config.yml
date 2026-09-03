@@ -28,7 +28,7 @@ collections:
         name: prices
         file: src/content/settings/prices.json
         fields:
-          - { label: Пояснение, name: intro, widget: text }
+          - { label: Пояснение, name: intro, widget: text, hint: "Legacy source for the home price strip only. Prefer optional price/priceNote on individual services for new CMS pricing." }
           - label: Позиции
             name: items
             widget: list
@@ -40,53 +40,243 @@ collections:
         file: src/content/settings/seo.json
         fields:
           - { label: Название сайта, name: siteName, widget: string }
-          - { label: Локаль, name: locale, widget: string }
+          - { label: Локаль Open Graph, name: locale, widget: string }
           - { label: Изображение по умолчанию, name: defaultImage, widget: image }
-          - { label: Страницы, name: pages, widget: object }
+          - label: Страницы
+            name: pages
+            widget: object
+            fields:
+              - label: Главная
+                name: home
+                widget: object
+                fields: &seo_page_fields
+                  - { label: Title, name: title, widget: string }
+                  - { label: Description, name: description, widget: text }
+                  - { label: Canonical path, name: canonical, widget: string }
+              - label: Запчасти
+                name: parts
+                widget: object
+                fields: *seo_page_fields
+              - label: Стационарный сервис
+                name: stationary
+                widget: object
+                fields: *seo_page_fields
+              - label: Статьи
+                name: articles
+                widget: object
+                fields: *seo_page_fields
       - label: Интеграции
         name: integrations
         file: src/content/settings/integrations.json
         fields:
           - { label: Public endpoint заявок, name: leadEndpoint, widget: string }
-          - { label: Аналитика, name: analytics, widget: object }
-          - { label: Bitrix24, name: bitrix24, widget: object }
+          - label: Аналитика
+            name: analytics
+            widget: object
+            fields:
+              - { label: Включена, name: enabled, widget: boolean, default: false }
+              - { label: Yandex Metrika ID, name: yandexMetrikaId, widget: string, default: TBD }
+              - { label: Отправлять цели заявок, name: trackLeadEvents, widget: boolean, default: false }
+              - { label: Статус, name: status, widget: string, default: future }
+          - label: Bitrix24
+            name: bitrix24
+            widget: object
+            fields:
+              - { label: Включен, name: enabled, widget: boolean, default: false }
+              - { label: Статус, name: status, widget: string, default: stub }
+              - label: Имена переменных окружения
+                name: envNames
+                widget: list
+                field: { label: Переменная, name: item, widget: string }
       - label: Главная
         name: home_page
         file: src/content/settings/home-page.json
         fields:
-          - { label: Hero, name: hero, widget: object }
-          - { label: Вводный блок, name: intro, widget: object }
-          - { label: Сервис, name: services, widget: object }
-          - { label: Промо запчастей, name: partsPromo, widget: object }
+          - label: Hero
+            name: hero
+            widget: object
+            fields: &hero_fields
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст, name: text, widget: text }
+              - { label: Основная кнопка, name: primaryCta, widget: string }
+              - { label: Вторичная кнопка, name: secondaryCta, widget: string }
+              - { label: Подпись фото, name: photoLabel, widget: string, required: false }
+              - label: Метрики
+                name: meta
+                widget: list
+                fields:
+                  - { label: Заголовок, name: title, widget: string }
+                  - { label: Текст, name: text, widget: string }
+          - label: Вводный блок
+            name: intro
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст, name: text, widget: text }
+              - label: Метрики
+                name: metrics
+                widget: list
+                fields:
+                  - { label: Заголовок, name: title, widget: string }
+                  - { label: Текст, name: text, widget: string }
+          - label: Сервис
+            name: services
+            widget: object
+            fields: &section_fields
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст, name: lead, widget: text }
+          - label: Промо запчастей
+            name: partsPromo
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст, name: lead, widget: text }
+              - { label: Основная кнопка, name: primaryCta, widget: string }
+              - { label: Вторичная кнопка, name: secondaryCta, widget: string }
+              - label: Пункты
+                name: items
+                widget: list
+                fields:
+                  - { label: Заголовок, name: title, widget: string }
+                  - { label: Текст, name: text, widget: string }
       - label: Запчасти
         name: parts_page
         file: src/content/settings/parts-page.json
         fields:
-          - { label: Hero, name: hero, widget: object }
-          - { label: Как подбираем, name: how, widget: object }
-          - { label: Группы, name: groups, widget: object }
-          - { label: Наличие, name: stock, widget: object }
-          - { label: Установка, name: install, widget: object }
+          - label: Hero
+            name: hero
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст, name: text, widget: text }
+              - { label: Основная кнопка, name: primaryCta, widget: string }
+              - { label: Вторичная кнопка, name: secondaryCta, widget: string }
+              - label: Метрики
+                name: meta
+                widget: list
+                fields:
+                  - { label: Заголовок, name: title, widget: string }
+                  - { label: Текст, name: text, widget: string }
+              - label: Панель подбора
+                name: panel
+                widget: object
+                fields:
+                  - { label: Метка, name: kicker, widget: string }
+                  - { label: Заголовок, name: title, widget: string }
+                  - label: Варианты
+                    name: options
+                    widget: list
+                    field: { label: Вариант, name: item, widget: string }
+          - label: Как подбираем
+            name: how
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - label: Шаги
+                name: steps
+                widget: list
+                fields:
+                  - { label: Номер, name: number, widget: string }
+                  - { label: Заголовок, name: title, widget: string }
+                  - { label: Текст, name: text, widget: text }
+          - label: Группы
+            name: groups
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст, name: lead, widget: text }
+              - label: Список
+                name: items
+                widget: list
+                field: { label: Группа, name: item, widget: string }
+          - label: Наличие
+            name: stock
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст, name: lead, widget: text }
+              - { label: CTA, name: cta, widget: string }
+          - label: Установка
+            name: install
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст, name: text, widget: text }
+              - { label: CTA, name: cta, widget: string }
       - label: Стационарный сервис
         name: stationary_page
         file: src/content/settings/stationary-page.json
         fields:
-          - { label: Hero, name: hero, widget: object }
-          - { label: Контент, name: content, widget: object }
+          - label: Hero
+            name: hero
+            widget: object
+            fields: *hero_fields
+          - label: Контент
+            name: content
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст, name: lead, widget: text }
+              - { label: Ссылка на запчасти, name: partsLinkLabel, widget: string, required: false }
+              - label: Пункты
+                name: items
+                widget: list
+                fields:
+                  - { label: Заголовок, name: title, widget: string }
+                  - { label: Текст, name: text, widget: text }
+      - label: Материалы
+        name: articles_page
+        file: src/content/settings/articles-page.json
+        fields:
+          - { label: Надзаголовок, name: eyebrow, widget: string }
+          - { label: Заголовок, name: title, widget: string }
+          - { label: Текст, name: lead, widget: text }
+          - { label: Пустой список · заголовок, name: emptyTitle, widget: string }
+          - { label: Пустой список · текст, name: emptyText, widget: text }
       - label: Формы
         name: forms
         file: src/content/settings/forms.json
         fields:
-          - { label: Сервис, name: service, widget: object }
-          - { label: Запчасти, name: parts, widget: object }
-          - { label: Стационарный сервис, name: stationary, widget: object }
+          - label: Сервис
+            name: service
+            widget: object
+            fields: &form_fields
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст, name: copy, widget: text }
+              - { label: Кнопка, name: button, widget: string }
+              - { label: Сообщение статуса, name: initialStatus, widget: text }
+          - label: Запчасти
+            name: parts
+            widget: object
+            fields: *form_fields
+          - label: Стационарный сервис
+            name: stationary
+            widget: object
+            fields: *form_fields
       - label: Преимущества
         name: advantages
         file: src/content/settings/advantages.json
         fields:
           - { label: Надзаголовок, name: eyebrow, widget: string }
           - { label: Заголовок, name: title, widget: string }
-          - { label: Элементы, name: items, widget: list }
+          - label: Элементы
+            name: items
+            widget: list
+            fields:
+              - { label: Номер, name: number, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст, name: text, widget: text }
       - label: Галерея
         name: gallery
         file: src/content/settings/gallery.json
@@ -94,12 +284,19 @@ collections:
           - { label: Надзаголовок, name: eyebrow, widget: string }
           - { label: Заголовок, name: title, widget: string }
           - { label: Текст, name: lead, widget: text }
-          - { label: Фото, name: items, widget: list }
+          - label: Фото
+            name: items
+            widget: list
+            fields:
+              - { label: Фото, name: image, widget: image }
+              - { label: Alt-текст, name: alt, widget: string }
+              - { label: Подпись, name: caption, widget: string }
   - name: business-directions
     label: Направления бизнеса
     folder: src/content/business-directions
     extension: json
     create: true
+    delete: true
     fields:
       - { label: Название, name: title, widget: string }
       - { label: Название в меню, name: navLabel, widget: string }
@@ -113,6 +310,7 @@ collections:
     folder: src/content/services
     extension: json
     create: true
+    delete: true
     fields:
       - { label: Название, name: title, widget: string }
       - { label: Метка, name: label, widget: string }
@@ -120,27 +318,48 @@ collections:
       - { label: Фото, name: image, widget: image }
       - { label: Alt-текст, name: alt, widget: string }
       - { label: CTA, name: cta, widget: string }
+      - { label: Цена, name: price, widget: string, required: false, hint: "Optional service-level price. Do not invent stationary prices." }
+      - { label: Пометка к цене, name: priceNote, widget: string, required: false }
       - { label: Порядок, name: order, widget: number }
   - name: team
     label: Команда
     folder: src/content/team
     extension: json
     create: true
+    delete: true
     fields:
       - { label: Заголовок, name: title, widget: string }
       - { label: Надзаголовок, name: subtitle, widget: string }
       - { label: Описание, name: description, widget: text }
       - { label: Фото, name: image, widget: image }
-      - { label: Пункты, name: points, widget: list }
+      - label: Пункты
+        name: points
+        widget: list
+        fields:
+          - { label: Заголовок, name: title, widget: string }
+          - { label: Текст, name: text, widget: string }
   - name: articles
-    label: SEO-статьи
+    label: Материалы
     folder: src/content/articles
     create: true
-    slug: "{{slug}}"
+    delete: true
+    slug: "{{fields.slug}}"
+    extension: md
+    format: frontmatter
     fields:
+      - label: Публикация
+        name: status
+        widget: select
+        options:
+          - { label: "Черновик (не публиковать)", value: draft }
+          - { label: "Опубликовано", value: published }
+        default: draft
+        hint: "Только status=published попадает в build и sitemap."
       - { label: Заголовок, name: title, widget: string }
-      - { label: SEO-описание, name: description, widget: text }
-      - { label: Статус, name: status, widget: select, options: [draft, published], default: draft }
-      - { label: Дата публикации, name: publishDate, widget: datetime, required: false }
-      - { label: Автор, name: author, widget: string, default: "Маркетолог ABService" }
-      - { label: Текст статьи, name: body, widget: markdown }
+      - { label: URL / slug, name: slug, widget: string, hint: "Часть адреса /articles/<slug>/" }
+      - { label: Дата, name: publishDate, widget: datetime, required: false }
+      - { label: Краткое описание, name: description, widget: text }
+      - { label: Обложка, name: cover, widget: image, required: false }
+      - { label: SEO title, name: seoTitle, widget: string, required: false }
+      - { label: SEO description, name: seoDescription, widget: text, required: false }
+      - { label: Текст, name: body, widget: markdown }

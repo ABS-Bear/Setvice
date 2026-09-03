@@ -1,8 +1,10 @@
 {
-  "leadEndpoint": "/api/lead",
+  "leadEndpoint": "https://abservice-leads-v2.vercel.app/api/lead",
   "analytics": {
+    "enabled": false,
     "yandexMetrikaId": "TBD",
-    "trackLeadEvents": true
+    "trackLeadEvents": false,
+    "status": "future"
   },
   "bitrix24": {
     "enabled": false,

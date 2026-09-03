@@ -4,6 +4,7 @@ import Hero from '@/components/sections/Hero.astro';
 import Contacts from '@/components/Contacts.astro';
 import MobileCta from '@/components/MobileCta.astro';
 import { settings } from '@/lib/content';
+import { withBase } from '@/lib/paths';
 
 const page = await settings<any>('stationary-page');
 ---
@@ -11,24 +12,30 @@ const page = await settings<any>('stationary-page');
   activePath="/stationary-service/"
   pageKey="stationary"
   secondaryNav={[
-    { label: 'Что известно', href: '#known' },
-    { label: 'Контакты', href: '#request' }
+    { label: 'О направлении', href: '#about' },
+    { label: 'Запись', href: '#request' }
   ]}
-  ctaText="Обсудить задачу"
+  ctaText="Записаться на диагностику"
   pageScript="site.js"
 >
   <main>
-    <Hero {...page.hero} secondaryHref="/" />
-    <section class="parts-how" id="known">
+    <Hero {...page.hero} variant="stationary" showPhoto={false} secondaryHref="/" />
+    <section class="parts-how" id="about">
       <div class="container">
         <div class="eyebrow">{page.content.eyebrow}</div>
         <h2 class="section-title">{page.content.title}</h2>
         <p class="section-lead">{page.content.lead}</p>
-        <div class="parts-steps">
-          {(page.content.items as any[]).map((item: any, index: number) => (
-            <article><b>{String(index + 1).padStart(2, '0')}</b><h3>{item.title}</h3><p>{item.text}</p></article>
+        <div class="stationary-points">
+          {(page.content.items as any[]).map((item: any) => (
+            <article>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </article>
           ))}
         </div>
+        <p class="section-lead stationary-parts-link">
+          <a class="parts-inline-link" href={withBase('/parts/')}>{page.content.partsLinkLabel || 'Смотреть раздел запчастей'} →</a>
+        </p>
       </div>
     </section>
     <Contacts variant="stationary" />

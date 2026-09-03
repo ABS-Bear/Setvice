@@ -9,7 +9,6 @@
       href:'tel:88005554433'
     },
     leadApiUrl:'https://abservice-leads-v2.vercel.app/api/lead',
-    crmCallbackUrl:'https://abservice-leads-v2.vercel.app/api/lead',
     area:'Москва и Московская область',
     media:{
       logo:'abservice-logo.png',

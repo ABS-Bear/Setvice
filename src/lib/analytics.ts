@@ -1,11 +1,12 @@
 type AnalyticsConfig = {
+  enabled?: boolean;
   yandexMetrikaId?: string;
   trackLeadEvents?: boolean;
 };
 
 export function analyticsScript(config: AnalyticsConfig) {
   const id = String(config.yandexMetrikaId || '').trim();
-  const hasMetrika = /^\d+$/.test(id);
+  const hasMetrika = Boolean(config.enabled) && /^\d+$/.test(id);
 
   return `
     (() => {
@@ -20,7 +21,7 @@ export function analyticsScript(config: AnalyticsConfig) {
         }
       };
 
-      if (!trackLeadEvents) return;
+      if (!metrikaId || !trackLeadEvents) return;
       window.addEventListener('abservice:leadSubmitted', event => {
         window.ABServiceAnalytics.goal('lead_submit', event.detail || {});
       });

@@ -2,10 +2,6 @@
   const config=window.ABServiceConfig||{};
   const hasOwn=(obj,key)=>Object.prototype.hasOwnProperty.call(obj,key);
   const leadApiUrl=hasOwn(config,'leadApiUrl')?config.leadApiUrl:'/api/lead';
-  const crmCallbackUrl=hasOwn(config,'crmCallbackUrl')?config.crmCallbackUrl:leadApiUrl;
-
-  const activateCrmWebhook=()=>crmCallbackUrl?fetch(crmCallbackUrl,{method:'GET'}).catch(()=>{}):Promise.resolve();
-  activateCrmWebhook();
 
   function ensureProductNavStyles(){
     if(document.getElementById('abservice-product-nav')) return;
@@ -89,14 +85,12 @@
     const result=await response.json().catch(()=>({}));
     if(!response.ok) throw new Error(result.error||`HTTP ${response.status}`);
     window.dispatchEvent(new CustomEvent('abservice:leadSubmitted',{detail:{kind:payload.kind||'service',source:payload.source||location.href}}));
-    activateCrmWebhook();
     return result;
   }
 
   window.ABService={
     config,
     leadApiUrl,
-    activateCrmWebhook,
     collectAttachments,
     ensureProductNavStyles,
     postLead

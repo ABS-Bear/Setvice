@@ -12,14 +12,39 @@ type Props = {
   ctaText?: string;
   ctaHref?: string;
   pageScript?: string;
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  ogType?: 'website' | 'article';
+  ogImagePath?: string;
+  noindex?: boolean;
 };
 
-const { activePath, pageKey, secondaryNav = [], ctaText, ctaHref = '#request', pageScript } = Astro.props;
+const {
+  activePath,
+  pageKey,
+  secondaryNav = [],
+  ctaText,
+  ctaHref = '#request',
+  pageScript,
+  title,
+  description,
+  canonicalPath,
+  ogType = 'website',
+  ogImagePath,
+  noindex = false
+} = Astro.props;
 const contacts = await settings<any>('contacts');
 const seo = await settings<any>('seo');
 const pageSeo = seo.pages[pageKey];
-const canonical = canonicalUrl(contacts.siteUrl, pageSeo.canonical);
-const ogImage = canonicalUrl(contacts.siteUrl, seo.defaultImage);
+const pageTitle = title || pageSeo.title;
+const pageDescription = description || pageSeo.description;
+const canonical = canonicalUrl(contacts.siteUrl, canonicalPath || pageSeo.canonical);
+const ogImage = ogImagePath
+  ? canonicalUrl(contacts.siteUrl, ogImagePath)
+  : pageKey === 'stationary'
+    ? ''
+    : canonicalUrl(contacts.siteUrl, seo.defaultImage);
 ---
 <!doctype html>
 <html lang="ru">
@@ -27,18 +52,19 @@ const ogImage = canonicalUrl(contacts.siteUrl, seo.defaultImage);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <meta name="theme-color" content="#0E1B2F" />
-    <meta name="description" content={pageSeo.description} />
-    <meta name="abservice-build" content="gate2b-target-architecture-migration-2026-09-03" />
+    <meta name="description" content={pageDescription} />
+    {noindex && <meta name="robots" content="noindex,follow" />}
+    <meta name="abservice-build" content="gate3a-telegram-production-readiness-2026-09-03" />
     <link rel="canonical" href={canonical} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:locale" content={seo.locale} />
     <meta property="og:site_name" content={seo.siteName} />
-    <meta property="og:title" content={pageSeo.title} />
-    <meta property="og:description" content={pageSeo.description} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={ogImage} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
     <meta name="twitter:card" content="summary_large_image" />
-    <title>{pageSeo.title}</title>
+    <title>{pageTitle}</title>
     <link rel="stylesheet" href={withBase('/site.css')} />
     <link rel="stylesheet" href={withBase('/parts-promo.css')} />
     <link rel="stylesheet" href={withBase('/parts.css')} />

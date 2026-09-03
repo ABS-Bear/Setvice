@@ -2,9 +2,12 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import MobileCta from '@/components/MobileCta.astro';
 import { getCollection } from 'astro:content';
+import { settings } from '@/lib/content';
 import { withBase } from '@/lib/paths';
 
-const articles = await getCollection('articles');
+const page = await settings<any>('articles-page');
+const articles = (await getCollection('articles', ({ data }) => data.status === 'published'))
+  .sort((a, b) => (b.data.publishDate?.getTime() || 0) - (a.data.publishDate?.getTime() || 0));
 ---
 <BaseLayout
   activePath="/articles/"
@@ -14,31 +17,42 @@ const articles = await getCollection('articles');
     { label: 'Запчасти', href: '/parts/' }
   ]}
   ctaText="Вызвать сервис"
+  ctaHref="/#request"
+  noindex={articles.length === 0}
 >
   <main>
     <section class="intro">
       <div class="container intro-grid">
         <div>
-          <div class="eyebrow">SEO-статьи</div>
-          <h1 class="section-title">Раздел для будущих материалов</h1>
+          <div class="eyebrow">{page.eyebrow}</div>
+          <h1 class="section-title">{page.title}</h1>
         </div>
         <div>
-          <p class="intro-copy">Маркетолог сможет готовить SEO-статьи через CMS. Сейчас добавлена только безопасная техническая структура без выдуманных бизнес-фактов.</p>
+          <p class="intro-copy">{page.lead}</p>
         </div>
       </div>
     </section>
     <section class="parts-groups">
       <div class="container">
-        <div class="parts-groups-grid">
-          {articles.map((article) => (
-            <a class="parts-groups-grid-link" href={withBase(`/articles/${article.slug}/`)}>
-              <strong>{article.data.title}</strong>
-              <span>{article.data.status === 'draft' ? 'Черновик' : 'Опубликовано'}</span>
-            </a>
-          ))}
-        </div>
+        {articles.length > 0 ? (
+          <div class="parts-groups-grid">
+            {articles.map((article) => (
+              <a class="parts-groups-grid-link" href={withBase(`/articles/${article.slug}/`)}>
+                <strong>{article.data.title}</strong>
+                <span>{article.data.publishDate ? article.data.publishDate.toLocaleDateString('ru-RU') : 'Материал'}</span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div class="parts-groups-grid">
+            <div class="parts-groups-grid-link" aria-live="polite">
+              <strong>{page.emptyTitle}</strong>
+              <span>{page.emptyText}</span>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   </main>
-  <MobileCta variant="service" />
+  <MobileCta variant="service" requestHref={withBase('/#request')} secondaryHref={withBase('/parts/')} secondaryLabel="Запчасти" enablePhoto={false} />
 </BaseLayout>

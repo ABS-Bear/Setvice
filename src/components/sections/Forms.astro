@@ -53,7 +53,9 @@ const data = forms[variant];
         <input class="field" name="name" placeholder="Ваше имя" />
         <input class="field" name="phone" type="tel" required placeholder="Телефон *" />
         <input class="field" name="machine" placeholder="Марка / модель техники" />
-        <input class="field" name="location" placeholder="Где находится техника?" />
+        {variant !== 'stationary' && (
+          <input class="field" name="location" placeholder="Где находится техника?" />
+        )}
         <textarea class="field" name="issue" placeholder="Что произошло?"></textarea>
         <label class="field" style="display:flex;align-items:center;cursor:pointer;color:rgba(255,255,255,.58)">
           Добавить фото / видео
