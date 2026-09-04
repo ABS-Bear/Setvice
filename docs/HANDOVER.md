@@ -49,7 +49,8 @@ The company should own and provide:
 - Telegram CRM remains the **only active** lead channel.
 - Bitrix24 and Yandex Metrika remain **future/off**.
 - `api/callback-v3.js` is a legacy fallback: GET read-only/disabled for webhook mutation; POST retained until external webhook confirmation.
-- Live Telegram regression is a **blocker** until an approved test lead is run.
+- Telegram production regression (2026-09-03) is **manually confirmed**: test lead delivered; `Взять в работу` worked. Docs must not record chat/user IDs or contact values.
+- `contacts.json` is public corporate content only; personal/internal/secrets are forbidden.
 
 ## Gate 3A Risks
 
@@ -58,7 +59,7 @@ The company should own and provide:
 - Bitrix24 field mapping needs real CRM pipeline details.
 - Yandex Metrika goal names should be confirmed with marketing.
 - Stationary service still needs owner-approved photos before any media is shown.
-- Live form testing would create Telegram leads and should be approved before execution.
+- Additional live form tests still create Telegram leads and need owner approval before execution.
 - Preview/custom-domain CORS origins must be added before live testing from those origins.
 - Vercel must define `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` and `TELEGRAM_INTERNAL_ID` or the API fails closed with 503.
 
@@ -68,5 +69,4 @@ The company should own and provide:
 - Merge into main.
 - Production deployment.
 - Real Bitrix24 lead sending.
-- Live Telegram form submission / regression.
 - Replacing or deleting legacy files.

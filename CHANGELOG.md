@@ -9,6 +9,7 @@
 - Telegram: `api/lead.js` remains the unified active endpoint; `api/callback-v3.js` GET is legacy-disabled/read-only (no webhook mutation); POST kept as fallback; chat/internal identifiers read from `TELEGRAM_CHAT_ID` / `TELEGRAM_INTERNAL_ID` with fail-closed 503 when missing.
 - Bitrix24 and Yandex Metrika stay future/off.
 - Added `CHANGELOG.md`, `docs/ROLLBACK.md`, dependency-free `npm run verify`, and `.gitignore` coverage for `.env.*` (allowing `.env.example`).
-- Live Telegram regression remains a blocker until an approved test lead is run.
+- Telegram production regression (2026-09-03) manually confirmed: test lead delivered; `Взять в работу` worked. No chat/user IDs recorded in docs.
+- `contacts.json` may contain only intentionally public corporate fields; personal, internal, and secret values are forbidden.
 
 Production push/merge/deploy is intentionally not part of this gate.

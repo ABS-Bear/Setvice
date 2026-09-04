@@ -2,9 +2,15 @@
 
 Decap CMS is prepared under the site base path (for example `/ArcticBear/admin/`) for local editing and future production editing. Production authentication is not enabled in Gate 3A. Admin is noindex and disallowed in robots with the same base-prefixed paths.
 
+## Contacts (`settings/contacts.json`)
+
+Allowed: intentionally public corporate fields only — brand, region, public phone display/href, public legal line, public site URL.
+
+Forbidden: personal data, internal-only hosts/notes, tokens, secrets, chat/user IDs, private phones, or any non-public value. If unsure, leave the field unchanged and ask the owner.
+
 ## What Marketing Can Change
 
-- Contacts, phone text and public site URL.
+- Contacts, phone text and public site URL (public corporate data only; see above).
 - Legacy home price strip in `settings/prices.json` (kept for the existing homepage strip).
 - Optional `price` / `priceNote` on individual service cards (CMS-level model; do not invent stationary prices).
 - Main page text blocks.

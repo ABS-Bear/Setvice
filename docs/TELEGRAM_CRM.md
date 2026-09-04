@@ -64,7 +64,7 @@ Reports are requested in the CRM chat with:
 /report month
 ```
 
-## Live Regression Test — Blocker
+## Live Regression Test
 
 Use one clearly marked test lead:
 
@@ -79,4 +79,6 @@ Check:
 - buttons progress from `Взять в работу` to `Связались` to `Успех`;
 - `/report` reflects the test action.
 
-Do not run this test against production Telegram without owner approval, because it creates a real CRM message and changes CRM counters. Gate 3A treats live regression as an open blocker until that approved run happens.
+Do not run this test against production Telegram without owner approval, because it creates a real CRM message and changes CRM counters.
+
+**Gate 3A status (2026-09-03):** manually confirmed — test lead delivered; `Взять в работу` worked. Do not record chat IDs, user IDs, or contact values in documentation.

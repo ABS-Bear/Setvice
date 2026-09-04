@@ -27,7 +27,7 @@ Gate 3A continues the Astro static frontend with a content layer, Decap CMS conf
 
 Content lives under `src/content/`:
 
-- `settings/contacts.json` — phone, region, legal placeholder and site URL;
+- `settings/contacts.json` — public corporate brand, region, phone, legal line and site URL only (no personal/internal/secrets);
 - `settings/prices.json` — **legacy** home price strip source (unchanged in Gate 3A);
 - `settings/seo.json` — page titles, descriptions and canonical paths;
 - `settings/integrations.json` — public lead endpoint, analytics config and Bitrix24 status;

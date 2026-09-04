@@ -10,11 +10,13 @@
 - Bitrix24: future/off, disabled by default.
 - Yandex Metrika: future/off, disabled until a real counter ID is provided.
 - CMS: Decap CMS config exists for local validation and future production use.
-- Live Telegram regression: **blocker** until owner-approved test lead.
+- Telegram production regression (2026-09-03): **manually confirmed** — test lead delivered; `Взять в работу` worked. No chat/user IDs in docs.
 
 ## Daily Content Work
 
 Use Decap CMS locally or edit files under `src/content/`. The content layer is the source of truth for phone, contacts, legacy home prices, optional service-level price fields, service text, parts text, stationary-service scope copy, articles landing copy, business directions, SEO metadata and article status.
+
+`src/content/settings/contacts.json` must hold only intentionally public corporate data (brand, region, public phone display/href, public legal line, public `siteUrl`). Personal, internal, and secret values are forbidden.
 
 Do not edit generated `dist/` files by hand.
 
