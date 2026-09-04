@@ -33,6 +33,7 @@
     e.preventDefault();
     const status=document.getElementById('status');
     const button=leadForm.querySelector('button[type="submit"]');
+    const originalLabel=button?button.textContent:'';
     if(!leadApiUrl){
       if(status){status.textContent='Интеграция с Telegram настраивается. Для срочного обращения позвоните 8 800 555-44-33.';status.style.display='block'}
       return;
@@ -60,7 +61,7 @@
       console.error(err);
       if(status) status.textContent=`Не удалось отправить заявку. Причина: ${err.message||'неизвестная ошибка'}`;
     }finally{
-      if(button){button.disabled=false;button.textContent='Отправить заявку'}
+      if(button){button.disabled=false;button.textContent=originalLabel}
     }
   });
 })();
