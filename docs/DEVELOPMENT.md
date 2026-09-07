@@ -12,16 +12,20 @@ npm run dev
 npm run lint
 npm run build
 npm run verify
+npm run test:webhook-security
 ```
 
 `npm run build` runs Astro checks before creating the static frontend in `dist/`.
-`npm run verify` is a dependency-free post-build check for internal links/assets/base paths and Gate 3A readiness assertions.
+`npm run verify` is a dependency-free post-build check for internal links/assets/base paths and production readiness assertions.
+`npm run test:webhook-security` is an offline, mocked check of Telegram webhook secret verification (19 cases). It does not call Telegram or Vercel.
 
 ## Local Preview
 
-The Astro dev server serves the frontend. In Gate 3A, `src/content/settings/integrations.json` points forms to the deployed Telegram CRM endpoint, so local form tests can create real Telegram leads if the owner approves them.
+The Astro dev server serves the frontend. `src/content/settings/integrations.json` points forms to the deployed Telegram CRM endpoint, so local form tests can create real Telegram leads if the owner approves them.
 
 Do not submit real Telegram leads during visual QA unless the owner explicitly approves a live test.
+
+Do not call `GET /api/lead` from the browser against production. That path can mutate the Telegram webhook.
 
 ## Project Structure
 
@@ -34,4 +38,4 @@ Do not submit real Telegram leads during visual QA unless the owner explicitly a
 
 ## Branch Policy
 
-Gate 3A work happens on `gate3a-telegram-production-readiness-2026-09-03`. Do not push, merge to main, or deploy production without separate confirmation.
+v1.0.0 release prep lives on `gate3c-telegram-webhook-security-2026-09-07`. Do not push, fetch, pull, merge to main, upload to a customer GitHub, or deploy production without separate confirmation.

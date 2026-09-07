@@ -2,7 +2,7 @@
 
 ## Active Channel
 
-Telegram CRM is the only active lead channel in Gate 3A. Bitrix24 is future/off. Yandex Metrika is future/off.
+Telegram CRM is the only **active production** lead channel in v1.0.0. Webhook security is **enabled**. Bitrix24 is post-launch / future. Yandex Metrika is post-launch / future.
 
 Frontend forms send leads to:
 
@@ -29,7 +29,9 @@ They must stay in Vercel environment variables. They must not be placed in front
 
 Missing `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` or `TELEGRAM_INTERNAL_ID` returns a safe 503 / error response without leaking secrets.
 
-Incoming Telegram webhook updates must present `X-Telegram-Bot-Api-Secret-Token` matching `TELEGRAM_WEBHOOK_SECRET`. Missing or wrong values are rejected. Frontend lead POSTs do not send this header. Production `setWebhook` with `secret_token` is a separate approved step; see `docs/DEPLOYMENT.md`. Do not record secret values here.
+Incoming Telegram webhook updates must present `X-Telegram-Bot-Api-Secret-Token` matching `TELEGRAM_WEBHOOK_SECRET`. Missing or wrong values are rejected. Frontend lead POSTs do not send this header. Production webhook secret is already synchronized; do not rotate it or call `setWebhook` without a separate approval. See `docs/DEPLOYMENT.md`. Do not record secret values here.
+
+Current Vercel production deployment: `dpl_84tMye42AgtbdKoDhwm2fT8EdSEs`. Rollback deployment: `dpl_A6yDU8GxhpLNSnFvAmWG6nmpHoDz`. Do **not** `GET /api/lead` in production.
 
 ## Legacy Fallback
 
@@ -38,7 +40,7 @@ Incoming Telegram webhook updates must present `X-Telegram-Bot-Api-Secret-Token`
 - GET: legacy-disabled / read-only — no webhook install or mutation.
 - POST: retained as fallback webhook handling.
 
-Do not delete the file in Gate 3A.
+Do not delete the file until a later cleanup is separately approved. Do not point the live webhook at `/api/callback-v3`.
 
 ## Lead Payloads
 
@@ -84,4 +86,6 @@ Check:
 
 Do not run this test against production Telegram without owner approval, because it creates a real CRM message and changes CRM counters.
 
-**Gate 3A status (2026-09-03):** manually confirmed — test lead delivered; `Взять в работу` worked. Do not record chat IDs, user IDs, or contact values in documentation.
+**Gate 3A status (2026-09-03):** manually confirmed — test lead delivered; `Взять в работу` worked.
+
+**v1.0.0 / Gate 3C production smoke-test (2026-09-07):** manually confirmed — lead arrives; CRM button works; webhook security is enabled. Do not record chat IDs, user IDs, or contact values in documentation.

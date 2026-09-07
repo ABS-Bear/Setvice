@@ -1,6 +1,6 @@
 # Admin Guide
 
-Decap CMS is prepared under the site base path (for example `/ArcticBear/admin/`) for local editing and future production editing. Production authentication is not enabled in Gate 3A. Admin is noindex and disallowed in robots with the same base-prefixed paths.
+Decap CMS is prepared under the site base path (for example `/ArcticBear/admin/`) for local editing and future production editing. **Production authentication is not enabled.** This is an open v1.0.0 handover / release task, not a finished production CMS. Admin is noindex and disallowed in robots with the same base-prefixed paths.
 
 ## Contacts (`settings/contacts.json`)
 
@@ -65,11 +65,16 @@ Do not publish logistics, route, timelines, guarantee wording, address or SLA cl
 - New CMS pricing edits should use optional service-level `price` / `priceNote`.
 - Do not invent or display fabricated stationary prices.
 
-## Production CMS Auth Still Needed
+## Production CMS Auth — open handover / release task
 
-Before enabling Decap CMS for the marketer in production, decide and configure:
+Do not treat Decap CMS as production-ready. `local_backend: true` is for local work. GitHub backend still points at the current placeholder repository and has no production OAuth / auth gateway.
 
+Before enabling Decap CMS for the marketer in production, close all of the following:
+
+- customer-owned GitHub repository (v1.0.0 is not uploaded yet);
+- update `public/admin/config.yml` `backend.repo` to that repository;
 - GitHub OAuth provider or Decap-compatible auth gateway;
 - final production branch;
 - editor GitHub accounts and repository permissions;
-- whether editorial workflow is required or `publish_mode: simple` remains acceptable.
+- whether editorial workflow is required or `publish_mode: simple` remains acceptable;
+- confirm `/admin/` stays noindex and robots-disallowed after the base path changes.

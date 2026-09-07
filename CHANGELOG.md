@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.0.0 — ABService production release (2026-09-07)
+
+- Astro migration: static frontend from the previous GitHub Pages field-service site, with structured content under `src/content/`.
+- Public routes: Service (`/`), Parts (`/parts/`), Stationary Service (`/stationary-service/`).
+- SEO articles: `/articles/` materials feed; only `status: published` entries are built or added to the sitemap.
+- Decap CMS: local schema and admin config are in place. **Production CMS authentication is not closed** and remains a handover / release task.
+- Telegram CRM is the **active production** lead channel at `https://abservice-leads-v2.vercel.app/api/lead`.
+- Webhook security is **enabled** in production: Telegram updates require `X-Telegram-Bot-Api-Secret-Token` matching `TELEGRAM_WEBHOOK_SECRET`. Ordinary frontend lead POSTs do not send this header.
+- Current Vercel production deployment: `dpl_84tMye42AgtbdKoDhwm2fT8EdSEs`. Known-good Vercel rollback: `dpl_A6yDU8GxhpLNSnFvAmWG6nmpHoDz`.
+- Handover docs: `README.md`, `docs/ARCHITECTURE.md`, `docs/DEVELOPMENT.md`, `docs/DEPLOYMENT.md`, `docs/ADMIN_GUIDE.md`, `docs/HANDOVER.md`, `docs/ROLLBACK.md`, `docs/TELEGRAM_CRM.md`, `docs/OPERATIONS.md`.
+- Bitrix24 and Yandex Metrika remain **post-launch / future** (disabled).
+- This changelog entry is documentation-only relative to Gate 3C code. No site copy, prices, forms, or CRM logic changes.
+
 ## Gate 3C — Telegram webhook secret (2026-09-07)
 
 - Incoming Telegram webhook updates on `api/lead.js` and legacy `api/callback-v3.js` now require header `X-Telegram-Bot-Api-Secret-Token` matching server env `TELEGRAM_WEBHOOK_SECRET` (timing-safe compare).

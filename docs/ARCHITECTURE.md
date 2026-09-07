@@ -1,6 +1,8 @@
 # ABService Architecture
 
-Gate 3A continues the Astro static frontend with a content layer, Decap CMS configuration, and a preserved Vercel Functions Telegram CRM backend.
+ABService v1.0.0 is an Astro static frontend with a content layer, Decap CMS configuration, and a Vercel Functions Telegram CRM backend.
+
+**Production snapshot (2026-09-07):** Telegram CRM is active; webhook secret verification is enabled; Bitrix24 and Yandex Metrika are post-launch / future; Decap CMS production authentication is not closed.
 
 ## Ownership Decisions
 
@@ -8,7 +10,7 @@ Gate 3A continues the Astro static frontend with a content layer, Decap CMS conf
 - Руководитель направления принимает финальные решения по сайту.
 - Маркетолог регулярно меняет контент через простую CMS.
 - Публикация изменений не требует отдельного approval workflow.
-- Production/main, push, merge and deployment are outside Gate 3A and require separate confirmation.
+- Production/main, push, merge, GitHub upload and further deployment require separate confirmation. v1.0.0 is prepared locally and is not uploaded to a customer GitHub repository yet.
 
 ## Frontend
 
@@ -49,23 +51,32 @@ Decap CMS is mounted under the Astro base path (for example `/ArcticBear/admin/`
 
 The CMS can edit content and media only. It does not expose Telegram token, Bitrix24 webhook, Vercel env vars, or backend source credentials.
 
+Decap CMS production authentication is **not enabled**. Treat `/admin/` as a local / future-handover surface, not a finished production CMS. See `docs/ADMIN_GUIDE.md` and `docs/HANDOVER.md`.
+
 ## Leads
 
-The public lead contract is `/api/lead`.
+The public lead contract is `/api/lead`. Production URL:
 
-Frontend forms submit normalized lead payloads and do not know Telegram internals. The browser must not auto-activate the Telegram webhook via GET on page load; webhook install stays server-side in the lead API. The Vercel Function owns delivery:
+```text
+https://abservice-leads-v2.vercel.app/api/lead
+```
 
-1. Telegram CRM delivery remains **active** and keeps the existing UX.
-2. Bitrix24 delivery is prepared through `api/lib/bitrix24-adapter.js`.
-3. Bitrix24 is **future/off** by default until credentials and a separate approval are provided.
+Current Vercel production deployment: `dpl_84tMye42AgtbdKoDhwm2fT8EdSEs`. Vercel rollback target: `dpl_A6yDU8GxhpLNSnFvAmWG6nmpHoDz`.
 
-`api/callback-v3.js` remains as a **legacy fallback**. GET is neutralized (legacy-disabled / read-only, no webhook mutation). POST stays until an external webhook check confirms `/api/lead`.
+Frontend forms submit normalized lead payloads and do not know Telegram internals. The browser must not auto-activate the Telegram webhook via GET on page load; webhook install stays server-side in the lead API. Do **not** use a browser `GET /api/lead` in production. The Vercel Function owns delivery:
+
+1. Telegram CRM delivery is **active production** and keeps the existing UX.
+2. Incoming Telegram webhook updates require `X-Telegram-Bot-Api-Secret-Token` matching `TELEGRAM_WEBHOOK_SECRET`. Ordinary frontend lead POSTs do not send this header.
+3. Bitrix24 delivery is prepared through `api/lib/bitrix24-adapter.js`.
+4. Bitrix24 is **post-launch / future** and stays off until credentials and a separate approval are provided.
+
+`api/callback-v3.js` remains as a **legacy fallback**. GET is neutralized (legacy-disabled / read-only, no webhook mutation). POST also requires the webhook secret and must not become the live webhook target.
 
 The site does not keep a separate full lead history.
 
 ## Analytics
 
-`src/lib/analytics.ts` exposes a small client-side goal layer. Analytics is disabled in `src/content/settings/integrations.json`; with `enabled: false` and `yandexMetrikaId: "TBD"`, it performs no external analytics calls. Yandex Metrika is **future/off**.
+`src/lib/analytics.ts` exposes a small client-side goal layer. Analytics is disabled in `src/content/settings/integrations.json`; with `enabled: false` and `yandexMetrikaId: "TBD"`, it performs no external analytics calls. Yandex Metrika is **post-launch / future**.
 
 ## SEO
 
