@@ -16,7 +16,7 @@ Safe options:
    ```
 3. **Leave the feature branch unused** and continue work on another branch. Do not merge Gate 3A into `main` until acceptance.
 
-Gate 3A work lives on `gate3a-telegram-production-readiness-2026-09-03`. Do not touch `main` during rollback of this gate.
+Gate 3A work lives on `gate3a-telegram-production-readiness-2026-09-03`. Gate 3B lives on `gate3b-controlled-rollout-2026-09-04`. Gate 3C lives on `gate3c-telegram-webhook-security-2026-09-07`. Do not touch `main` during rollback of this gate.
 
 ## Legacy archive
 
@@ -45,4 +45,19 @@ To roll back a future production release later:
 3. Confirm Vercel still serves the intended `/api/lead` function and environment variable names.
 4. Do not delete `api/callback-v3.js` until webhook ownership is confirmed.
 
-Gate 3A itself does not push, merge, or deploy.
+Gate 3A / 3B / 3C themselves do not push, merge, or deploy.
+
+## Gate 3C webhook-secret rollback
+
+Local code rollback (no remote):
+
+1. Prefer `git revert <gate3c-commit-sha>` or leave `gate3c-telegram-webhook-security-2026-09-07` unused.
+2. Do not `git reset --hard` or force-push.
+
+If a future production deploy of Gate 3C must be undone (separate deploy approval):
+
+1. Redeploy the last known-good pre-Gate 3C function (`10292ec` / Gate 3B). That build ignores `X-Telegram-Bot-Api-Secret-Token`, so CRM updates work whether or not Telegram still sends the header.
+2. Do **not** remove Telegram `secret_token` while Gate 3C code is still live: missing header would reject updates.
+3. Do **not** delete Vercel `TELEGRAM_WEBHOOK_SECRET` while Gate 3C is live.
+4. After the old function is live, optionally leave the Telegram secret in place (harmless) or, with separate approval, call `setWebhook` on the same `/api/lead` URL without `secret_token`.
+5. Frontend lead POST does not depend on this header; do not change form code during rollback.

@@ -22,11 +22,14 @@ The Vercel backend requires these environment variable **names** (never commit v
 TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
 TELEGRAM_INTERNAL_ID
+TELEGRAM_WEBHOOK_SECRET
 ```
 
 They must stay in Vercel environment variables. They must not be placed in frontend config, Decap CMS, `src/content/`, build output or documentation values.
 
-Missing required config returns a safe 503 / error response without leaking secrets.
+Missing `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` or `TELEGRAM_INTERNAL_ID` returns a safe 503 / error response without leaking secrets.
+
+Incoming Telegram webhook updates must present `X-Telegram-Bot-Api-Secret-Token` matching `TELEGRAM_WEBHOOK_SECRET`. Missing or wrong values are rejected. Frontend lead POSTs do not send this header. Production `setWebhook` with `secret_token` is a separate approved step; see `docs/DEPLOYMENT.md`. Do not record secret values here.
 
 ## Legacy Fallback
 

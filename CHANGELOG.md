@@ -1,5 +1,15 @@
 # Changelog
 
+## Gate 3C — Telegram webhook secret (2026-09-07)
+
+- Incoming Telegram webhook updates on `api/lead.js` and legacy `api/callback-v3.js` now require header `X-Telegram-Bot-Api-Secret-Token` matching server env `TELEGRAM_WEBHOOK_SECRET` (timing-safe compare).
+- Valid secret accepts the update. Missing or wrong secret returns generic 401. Ordinary frontend lead POSTs continue without this header.
+- `TELEGRAM_BOT_TOKEN`, chat/internal IDs, CRM UX, statuses, reports, and frontend content are unchanged.
+- `install()` payload builder can include `secret_token` when env is set so a later routine lead submit does not strip it. This gate does **not** call Telegram `setWebhook` and does not change production env or webhook URL.
+- Offline tests: valid / missing / wrong secret, ordinary lead POST, callback/update flow. Command: `npm run test:webhook-security`.
+- Docs: `docs/DEPLOYMENT.md` (env name + future migration sequence), `docs/HANDOVER.md`, `docs/ROLLBACK.md`.
+- No push, fetch, pull, deploy, remote change, or production webhook reinstall.
+
 ## Gate 3B — Controlled regression (2026-09-04)
 
 - Offline harness (`/tmp`, fetch fully mocked): 13/13 PASS, zero real network.

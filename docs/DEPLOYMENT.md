@@ -33,9 +33,31 @@ Required environment variable **names** (values stay only in Vercel; never in do
 TELEGRAM_BOT_TOKEN
 TELEGRAM_CHAT_ID
 TELEGRAM_INTERNAL_ID
+TELEGRAM_WEBHOOK_SECRET
 ```
 
-Missing required Telegram config fails closed with a safe 503 and must not leak secrets.
+Missing `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` or `TELEGRAM_INTERNAL_ID` fails closed with a safe 503 and must not leak secrets.
+
+`TELEGRAM_WEBHOOK_SECRET` is required for incoming Telegram webhook updates (`callback_query` / `message` / `update_id`). The handler checks `X-Telegram-Bot-Api-Secret-Token` with a timing-safe compare. Valid secret accepts the update. Missing or wrong secret returns a generic 401. Ordinary frontend lead POSTs do **not** send this header and must keep working without it.
+
+Do not put `TELEGRAM_WEBHOOK_SECRET` in frontend config, Decap CMS, git, build output, logs, or documentation values. Telegram accepts `secret_token` of 1–256 characters in `[A-Za-z0-9_-]`.
+
+## Future Telegram webhook secret migration (NOT executed in Gate 3C)
+
+Do not run this until the owner separately approves a production webhook change. This gate does not call Telegram `setWebhook`, does not change the webhook URL, and does not write production env.
+
+Safest order (old function still deployed for steps 1–3):
+
+1. Generate a secret locally. Store it only in a password manager and Vercel. Never commit, log, chat, or document the value.
+2. Set Vercel `TELEGRAM_WEBHOOK_SECRET` on the existing production project. Do **not** change `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, or `TELEGRAM_INTERNAL_ID`.
+3. After explicit approval, call Telegram `setWebhook` once with the **same** current URL `https://abservice-leads-v2.vercel.app/api/lead`, the same `allowed_updates` (`callback_query`, `message`), and `secret_token` equal to `TELEGRAM_WEBHOOK_SECRET`. Pre-Gate 3C code ignores the header, so CRM buttons keep working.
+4. Deploy the Gate 3C `/api/lead` function (separate deploy approval).
+5. Confirm one CRM button update is accepted. Frontend lead POST must still work without the header.
+6. Do not retarget the webhook to `/api/callback-v3`. Do not use a browser `GET /api/lead` as the migration tool.
+
+If Gate 3C is deployed before step 3, Telegram will not send the header and webhook updates will be rejected until `setWebhook` with `secret_token` is completed. Lead forms still work in that window.
+
+After env is set, the existing server-side `install()` path includes `secret_token` so a later routine lead submit does not strip the secret. That is defensive, not the approved migration trigger.
 
 Prepared Bitrix24 variables (future/off):
 

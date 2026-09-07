@@ -1,4 +1,5 @@
 import { sendLeadToBitrix24 } from './lib/bitrix24-adapter.js';
+import { buildSetWebhookPayload, isTelegramWebhookUpdate, verifyTelegramWebhookSecret } from './lib/telegram-webhook-secret.js';
 
 const CHAT=process.env.TELEGRAM_CHAT_ID||'';
 const INTERNAL=process.env.TELEGRAM_INTERNAL_ID||'';
@@ -28,7 +29,7 @@ async function tg(token,method,payload){
   return {ok:r.ok&&!!d.ok,data:d};
 }
 async function answer(token,id,text,alert=false){if(id)await tg(token,'answerCallbackQuery',{callback_query_id:id,text:String(text).slice(0,180),show_alert:alert})}
-async function install(token){return tg(token,'setWebhook',{url:WEBHOOK,allowed_updates:['callback_query','message']})}
+async function install(token){return tg(token,'setWebhook',buildSetWebhookPayload(WEBHOOK))}
 
 function keys(status){
   if(status==='in_work')return{inline_keyboard:[[{text:'☎️ Связались',callback_data:'lead:contacted'},{text:'📵 Не дозвонились',callback_data:'lead:no_answer'}]]};
@@ -109,4 +110,4 @@ async function command(token,m){if(String(m?.chat?.id)!==CHAT)return{ok:true};co
 
 export async function GET(req){const token=process.env.TELEGRAM_BOT_TOKEN;if(!token||!CHAT||!INTERNAL)return json(req,{ok:false,error:'telegram config missing'},503);const i=await install(token);const c=await getCrm(token);if(c.ok)await saveCrm(token,c.id,c.state);return json(req,{ok:i.ok,service:'ABService unified lead+CRM v4',crmV4:true,webhook:WEBHOOK,crm:c.ok,error:i.data?.description||null})}
 export function OPTIONS(req){return new Response(null,{status:204,headers:corsHeaders(req)})}
-export async function POST(req){const o=req.headers.get('origin')||'';if(o&&!allowedOrigin(o))return json(req,{ok:false,error:'Origin not allowed'},403);const token=process.env.TELEGRAM_BOT_TOKEN;if(!token||!CHAT||!INTERNAL)return json(req,{ok:false,error:'telegram config missing'},503);try{const b=await req.json();if(b.callback_query)return json(req,await callback(token,b.callback_query));if(b.message)return json(req,await command(token,b.message));const r=await submitLead(token,b);return json(req,r,r.status||200)}catch(e){console.error(e);return json(req,{ok:false,error:'request failed'},500)}}
+export async function POST(req){const o=req.headers.get('origin')||'';if(o&&!allowedOrigin(o))return json(req,{ok:false,error:'Origin not allowed'},403);const token=process.env.TELEGRAM_BOT_TOKEN;if(!token||!CHAT||!INTERNAL)return json(req,{ok:false,error:'telegram config missing'},503);try{const b=await req.json();if(isTelegramWebhookUpdate(b)){const auth=verifyTelegramWebhookSecret(req);if(!auth.ok)return json(req,{ok:false,error:'unauthorized'},auth.status);if(b.callback_query)return json(req,await callback(token,b.callback_query));if(b.message)return json(req,await command(token,b.message));return json(req,{ok:true})}const r=await submitLead(token,b);return json(req,r,r.status||200)}catch(e){console.error(e);return json(req,{ok:false,error:'request failed'},500)}}

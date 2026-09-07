@@ -165,6 +165,16 @@ if (!getLine || !/legacy-disabled/.test(getLine)) fail('callback-v3 GET not lega
 if (getLine && /await install\(/.test(getLine)) fail('callback-v3 GET still calls install');
 if (getLine && /setWebhook/.test(getLine)) fail('callback-v3 GET still references setWebhook');
 
+const secretLib = read(join(root, 'api/lib/telegram-webhook-secret.js'));
+if (!/TELEGRAM_WEBHOOK_SECRET/.test(secretLib)) fail('webhook secret lib missing TELEGRAM_WEBHOOK_SECRET');
+if (!/X-Telegram-Bot-Api-Secret-Token/.test(secretLib)) fail('webhook secret lib missing X-Telegram-Bot-Api-Secret-Token');
+if (!/timingSafeEqual/.test(secretLib)) fail('webhook secret compare is not timing-safe');
+if (!/verifyTelegramWebhookSecret/.test(lead) || !/isTelegramWebhookUpdate/.test(lead)) fail('lead.js missing webhook secret verification');
+if (!/verifyTelegramWebhookSecret/.test(cb)) fail('callback-v3.js missing webhook secret verification');
+if (!existsSync(join(root, 'scripts/telegram-webhook-secret.test.mjs'))) fail('webhook secret tests missing');
+const envExample = read(join(root, '.env.example'));
+if (!/^TELEGRAM_WEBHOOK_SECRET=\s*$/m.test(envExample)) fail('.env.example must list empty TELEGRAM_WEBHOOK_SECRET=');
+
 // prices.json must be unchanged vs intentional non-touch; presence only here
 if (!existsSync(join(root, 'src/content/settings/prices.json'))) fail('prices.json missing');
 

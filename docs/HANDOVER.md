@@ -62,6 +62,21 @@ The company should own and provide:
 - Additional live form tests still create Telegram leads and need owner approval before execution.
 - Preview/custom-domain CORS origins must be added before live testing from those origins.
 - Vercel must define `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` and `TELEGRAM_INTERNAL_ID` or the API fails closed with 503.
+- Gate 3C adds `TELEGRAM_WEBHOOK_SECRET`. Incoming Telegram webhook updates require header `X-Telegram-Bot-Api-Secret-Token`. Ordinary frontend lead POSTs do not send this header.
+
+## Gate 3C Status
+
+- Local branch: `gate3c-telegram-webhook-security-2026-09-07`.
+- Unified endpoint remains `api/lead.js`. Legacy `api/callback-v3.js` POST now also requires the webhook secret; GET stays legacy-disabled.
+- CRM UX, statuses, reports, frontend copy, `TELEGRAM_BOT_TOKEN`, and Telegram chat/internal IDs are unchanged.
+- Production `setWebhook` with `secret_token` is documented in `docs/DEPLOYMENT.md` and is **not** executed in this gate.
+- Offline webhook-secret tests: `npm run test:webhook-security`.
+
+## Gate 3C Risks
+
+- Deploying Gate 3C before Telegram `setWebhook` with `secret_token` rejects CRM button updates until that migration runs.
+- Routine `install()` on lead submit includes `secret_token` only when `TELEGRAM_WEBHOOK_SECRET` is set; do not treat that as the approved production migration.
+- Secret values must never appear in logs, frontend, build, git, or docs.
 
 ## Separate Confirmation Required
 
