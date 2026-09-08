@@ -1,4 +1,5 @@
 import { sendLeadToBitrix24 } from './lib/bitrix24-adapter.js';
+import { corsHeaders, isAllowedFrontendOrigin } from './lib/cors-origins.js';
 import { buildSetWebhookPayload, isTelegramWebhookUpdate, verifyTelegramWebhookSecret } from './lib/telegram-webhook-secret.js';
 
 const CHAT=process.env.TELEGRAM_CHAT_ID||'';
@@ -6,15 +7,9 @@ const INTERNAL=process.env.TELEGRAM_INTERNAL_ID||'';
 const WEBHOOK='https://abservice-leads-v2.vercel.app/api/lead';
 const MAX_ATTACH=2;
 const MAX_BYTES=1600000;
-const ORIGIN='https://abs-bear.github.io';
-const LOCAL_ORIGIN=/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 const SEP='\n\n────────\n';
 const PREFIX='CRMSTATE:';
 const MAX=12;
-
-const allowedOrigin=origin=>origin===ORIGIN||LOCAL_ORIGIN.test(String(origin||''));
-const corsOrigin=req=>{const origin=req.headers.get('origin')||'';return allowedOrigin(origin)?origin:''};
-const corsHeaders=req=>({'Access-Control-Allow-Origin':corsOrigin(req),'Access-Control-Allow-Methods':'GET,POST,OPTIONS','Access-Control-Allow-Headers':'Content-Type','Vary':'Origin'});
 const esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const name=u=>`${[u?.first_name,u?.last_name].filter(Boolean).join(' ')||'Сотрудник'}${u?.username?` @${u.username}`:''}`.slice(0,48);
 const userKey=u=>String(u?.id||'');
@@ -110,4 +105,4 @@ async function command(token,m){if(String(m?.chat?.id)!==CHAT)return{ok:true};co
 
 export async function GET(req){const token=process.env.TELEGRAM_BOT_TOKEN;if(!token||!CHAT||!INTERNAL)return json(req,{ok:false,error:'telegram config missing'},503);const i=await install(token);const c=await getCrm(token);if(c.ok)await saveCrm(token,c.id,c.state);return json(req,{ok:i.ok,service:'ABService unified lead+CRM v4',crmV4:true,webhook:WEBHOOK,crm:c.ok,error:i.data?.description||null})}
 export function OPTIONS(req){return new Response(null,{status:204,headers:corsHeaders(req)})}
-export async function POST(req){const o=req.headers.get('origin')||'';if(o&&!allowedOrigin(o))return json(req,{ok:false,error:'Origin not allowed'},403);const token=process.env.TELEGRAM_BOT_TOKEN;if(!token||!CHAT||!INTERNAL)return json(req,{ok:false,error:'telegram config missing'},503);try{const b=await req.json();if(isTelegramWebhookUpdate(b)){const auth=verifyTelegramWebhookSecret(req);if(!auth.ok)return json(req,{ok:false,error:'unauthorized'},auth.status);if(b.callback_query)return json(req,await callback(token,b.callback_query));if(b.message)return json(req,await command(token,b.message));return json(req,{ok:true})}const r=await submitLead(token,b);return json(req,r,r.status||200)}catch(e){console.error(e);return json(req,{ok:false,error:'request failed'},500)}}
+export async function POST(req){const o=req.headers.get('origin')||'';if(o&&!isAllowedFrontendOrigin(o))return json(req,{ok:false,error:'Origin not allowed'},403);const token=process.env.TELEGRAM_BOT_TOKEN;if(!token||!CHAT||!INTERNAL)return json(req,{ok:false,error:'telegram config missing'},503);try{const b=await req.json();if(isTelegramWebhookUpdate(b)){const auth=verifyTelegramWebhookSecret(req);if(!auth.ok)return json(req,{ok:false,error:'unauthorized'},auth.status);if(b.callback_query)return json(req,await callback(token,b.callback_query));if(b.message)return json(req,await command(token,b.message));return json(req,{ok:true})}const r=await submitLead(token,b);return json(req,r,r.status||200)}catch(e){console.error(e);return json(req,{ok:false,error:'request failed'},500)}}

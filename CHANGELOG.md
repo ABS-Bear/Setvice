@@ -13,6 +13,12 @@
 - Bitrix24 and Yandex Metrika remain **post-launch / future** (disabled).
 - This changelog entry is documentation-only relative to Gate 3C code. No site copy, prices, forms, or CRM logic changes.
 
+## v1.0.0 — CORS migration allowlist (2026-09-08)
+
+- Temporary dual frontend CORS allowlist for the customer repo cutover: `https://alecmonopoly84-hue.github.io` (**TEMPORARY MIGRATION ALLOWLIST**) and `https://abs-bear.github.io`.
+- `localhost` and arbitrary origins are rejected. No `*`.
+- Remove the old Pages origin in a separate post-cutover commit after `https://abs-bear.github.io/Setvice/` is live.
+
 ## Gate 3C — Telegram webhook secret (2026-09-07)
 
 - Incoming Telegram webhook updates on `api/lead.js` and legacy `api/callback-v3.js` now require header `X-Telegram-Bot-Api-Secret-Token` matching server env `TELEGRAM_WEBHOOK_SECRET` (timing-safe compare).

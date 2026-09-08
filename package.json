@@ -9,7 +9,8 @@
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "lint": "ASTRO_TELEMETRY_DISABLED=1 astro check",
     "verify": "node scripts/verify.mjs",
-    "test:webhook-security": "node scripts/telegram-webhook-secret.test.mjs"
+    "test:webhook-security": "node scripts/telegram-webhook-secret.test.mjs",
+    "test:cors": "node scripts/cors-origins.test.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

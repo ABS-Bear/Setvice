@@ -97,7 +97,14 @@ Bitrix24 must remain disabled until credentials and a separate integration appro
 
 ## CORS
 
-Source CORS allows the Setvice GitHub Pages origin (`https://abs-bear.github.io`) and local development origins (`localhost` / `127.0.0.1`). Live Vercel still has the previous allowlist until a separately approved API deploy. Telegram webhook requests without `Origin` are accepted by the lead POST path. Do not use `*`. Add preview or custom-domain origins deliberately before using them for live form tests.
+Source CORS is a two-origin migration allowlist (`api/lib/cors-origins.js`). No `*`.
+
+```text
+https://alecmonopoly84-hue.github.io   TEMPORARY MIGRATION ALLOWLIST
+https://abs-bear.github.io             customer Pages origin
+```
+
+`localhost` / `127.0.0.1` and any other origin are rejected (lead POST returns 403). Telegram webhook requests without `Origin` are still accepted. After the new Pages site is live and confirmed, remove the old origin in a **separate post-cutover commit**. Live Vercel still has the previous allowlist until a separately approved API deploy. Do not add preview or custom-domain origins without a deliberate change.
 
 `api/callback-v3.js` is legacy fallback: GET returns legacy-disabled/read-only status and does not mutate webhooks; POST requires the webhook secret. Do not rely on browser page-load GET against `/api/lead` for webhook activation; keep that server-side.
 

@@ -72,7 +72,7 @@ The company should own and provide:
 
 - **CMS production authentication is not closed.** Marketers must not treat `/Setvice/admin/` as a live production CMS.
 - Source is remapped to `ABS-Bear/Setvice` and Pages URL `https://abs-bear.github.io/Setvice/`. Push / Pages enablement is still pending.
-- Live Vercel CORS still allows the previous Pages origin until a separately approved API deploy of this source.
+- Source CORS temporarily allows both the old Pages origin (`https://alecmonopoly84-hue.github.io`, **TEMPORARY MIGRATION ALLOWLIST**) and `https://abs-bear.github.io`. Remove the old origin in a post-cutover commit after the new Pages site is live. Live Vercel still has the previous allowlist until a separately approved API deploy.
 - Bitrix24 field mapping needs real CRM pipeline details.
 - Yandex Metrika goal names should be confirmed with marketing.
 - Stationary service still needs owner-approved photos before any media is shown.

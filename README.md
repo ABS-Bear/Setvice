@@ -65,4 +65,4 @@ Local source is remapped. The customer remote is **not connected or pushed yet**
 2. Enable GitHub Pages on `ABS-Bear/Setvice` (GitHub Actions / `main`).
 3. Close **CMS production auth** (OAuth or compatible gateway, editor accounts, production branch). Until then, marketers should not treat `/Setvice/admin/` as a production CMS.
 4. Keep Bitrix24 and Yandex Metrika off until separately approved.
-5. A later approved Vercel deploy is required before the new Pages origin can submit leads (source CORS is already `https://abs-bear.github.io`). Do not change Telegram webhook/env.
+5. A later approved Vercel deploy is required before the new Pages origin can submit leads. Source CORS temporarily allows both `https://alecmonopoly84-hue.github.io` (**TEMPORARY MIGRATION ALLOWLIST**) and `https://abs-bear.github.io`. Remove the old origin after cutover. Do not change Telegram webhook/env.

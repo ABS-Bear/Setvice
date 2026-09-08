@@ -162,7 +162,13 @@ if (!/repo:\s*ABS-Bear\/Setvice/.test(adminYml)) fail('Decap backend.repo is not
 
 const lead = read(join(root, 'api/lead.js'));
 const cb = read(join(root, 'api/callback-v3.js'));
-if (!/const ORIGIN='https:\/\/abs-bear\.github\.io'/.test(lead)) fail('lead.js CORS origin is not the Setvice Pages origin');
+const corsLib = read(join(root, 'api/lib/cors-origins.js'));
+if (!corsLib.includes('https://alecmonopoly84-hue.github.io')) fail('CORS missing TEMPORARY old Pages origin');
+if (!corsLib.includes('https://abs-bear.github.io')) fail('CORS missing customer Pages origin');
+if (!/TEMPORARY MIGRATION ALLOWLIST/.test(corsLib)) fail('CORS missing TEMPORARY MIGRATION ALLOWLIST marker');
+if (/['"]\s*\*\s*['"]/.test(corsLib)) fail('CORS uses wildcard origin');
+if (!/isAllowedFrontendOrigin/.test(lead) || !/isAllowedFrontendOrigin/.test(cb)) fail('lead/callback-v3 missing shared CORS allowlist');
+if (!existsSync(join(root, 'scripts/cors-origins.test.mjs'))) fail('CORS tests missing');
 if (!/TELEGRAM_CHAT_ID/.test(lead) || !/TELEGRAM_INTERNAL_ID/.test(lead)) fail('lead.js missing env identifier vars');
 if (!/TELEGRAM_CHAT_ID/.test(cb) || !/TELEGRAM_INTERNAL_ID/.test(cb)) fail('callback-v3.js missing env identifier vars');
 if (/const CHAT='-?\d+'/.test(lead) || /const INTERNAL='\d+'/.test(lead)) fail('lead.js still has literal chat/internal ids');
