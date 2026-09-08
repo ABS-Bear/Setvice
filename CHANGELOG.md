@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.0.1 — ABService handover release (2026-09-08)
+
+- Customer repository cutover to `ABS-Bear/Setvice` and GitHub Pages `https://abs-bear.github.io/Setvice/`.
+- Legacy frontend origin removed from active CORS; allowlist is only `https://abs-bear.github.io`.
+- Company-owned CMS OAuth: Decap GitHub backend + ABS-Bear OAuth App + Vercel proxy `/api/cms-auth` and `/api/cms-callback`.
+- CMS media `public_folder` corrected to `/Setvice/media` for Astro base `/Setvice/`.
+- CMS acceptance test PASS (GitHub login). Temporary `cms-test` article is not in the production content layer.
+- Documentation and handover closure: marketer workflow, access registry, rollback IDs, architecture as actually deployed.
+- Telegram CRM remains the only active lead channel. Bitrix24 and Yandex Metrika stay post-launch / future (not launched).
+
 ## CMS Auth Stage 1 — local OAuth proxy (2026-09-08)
 
 - Added isolated Decap GitHub OAuth proxy: `/api/cms-auth`, `/api/cms-callback`. Uses `GITHUB_OAUTH_CLIENT_ID` / `GITHUB_OAUTH_CLIENT_SECRET` only. No `TELEGRAM_*`, no `/api/lead` changes.

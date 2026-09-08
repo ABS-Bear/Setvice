@@ -42,4 +42,4 @@ Do not call `GET /api/lead` from the browser against production. That path can m
 
 ## Branch Policy
 
-v1.0.0 release prep lives on `gate3c-telegram-webhook-security-2026-09-07`. Do not push, fetch, pull, merge to main, upload to a customer GitHub, or deploy production without separate confirmation.
+Production is `ABS-Bear/Setvice` `main` (tag `v1.0.1`). Do not force-push `main` or move tag `v1.0.0`. Do not change Vercel env or the Telegram webhook without a separate operations decision.

@@ -1,114 +1,107 @@
 # Handover
 
-## What A New Contractor Receives
+ABService v1.0.1 is **production-ready** and **handover-ready**. A new contractor should be able to start from this repository and the access registry below within **1–3 days**.
+
+CMS production auth is **operational**. It is not a blocker.
+
+Do not record tokens, webhook secrets, chat/user IDs, client secrets, or passwords in this file.
+
+## What a new contractor receives
 
 - Astro static frontend (Service, Parts, Stationary Service, SEO articles).
 - Structured editable content in `src/content/`.
-- Decap CMS configuration in `public/admin/` plus a local company-owned OAuth proxy. **CMS OAuth implementation is ready locally; production OAuth App/env is not configured.**
-- Preserved Vercel Functions backend in `api/` with Telegram webhook secret verification.
-- Bitrix24 adapter stub and env names (post-launch / future, disabled).
+- Decap CMS at `https://abs-bear.github.io/Setvice/admin/` with company-owned GitHub OAuth and a Vercel OAuth proxy (`/api/cms-auth`, `/api/cms-callback`).
+- Vercel Functions backend in `api/` with Telegram webhook secret verification.
+- Bitrix24 adapter stub and env **names** (post-launch / future, disabled).
 - Documentation for development, admin, deployment, operations, Telegram CRM and rollback.
-- Legacy static files retained for comparison and rollback; the old GitHub Pages zip is archived under `archive/legacy/`.
-- Local annotated tag `v1.0.0` on this release commit.
+- Legacy static files retained for comparison; the old GitHub Pages zip is under `archive/legacy/`.
+- Tags: `v1.0.0` (historical, do not move) and `v1.0.1` (this handover).
 
-This snapshot is prepared **locally** for `ABS-Bear/Setvice`. It is not pushed, does not change live Vercel or Telegram, and does not retag `v1.0.0`.
+## Production state
 
-## v1.0.0 production state
+| Area | Status |
+|------|--------|
+| GitHub repo owner | Customer organization **ABS-Bear** (`ABS-Bear/Setvice`) |
+| Production frontend | `https://abs-bear.github.io/Setvice/` |
+| Production Vercel project | `abservice-leads-v2` |
+| Current Vercel production | `dpl_9QJvwSs9GsiU2tAyxFTf6tLgvhfw` |
+| Vercel rollback | `dpl_F4Umk6QvmjUqhjTXZP7awRuNrTdq` |
+| OAuth App | Company-owned GitHub OAuth App on **ABS-Bear** |
+| CMS production auth | **Operational** |
+| Telegram CRM | **Operational** |
+| Bitrix24 | Post-launch / future (disabled) |
+| Yandex Metrika | Post-launch / future (disabled) |
 
-- Telegram CRM: **active production**.
-- Webhook security: **enabled**.
-- Production endpoint: `https://abservice-leads-v2.vercel.app/api/lead`.
-- Current Vercel production deployment: `dpl_84tMye42AgtbdKoDhwm2fT8EdSEs`.
-- Vercel rollback deployment: `dpl_A6yDU8GxhpLNSnFvAmWG6nmpHoDz`.
-- Bitrix24: **post-launch / future**.
-- Yandex Metrika: **post-launch / future**.
-- CMS production auth: **open handover / release task**.
+Do **not** `GET /api/lead` in production.
 
-Do not record tokens, webhook secrets, chat/user IDs, or other credentials in this file.
+## Access registry (no credentials)
 
-## First Setup
+| System | Resource | Intended access |
+|--------|----------|-----------------|
+| GitHub organization | `ABS-Bear` | Customer **Owner** |
+| GitHub repository | `ABS-Bear/Setvice` | Customer Owner; contractor **Admin** or **Write** as needed; marketer **Write** only (outside collaborator is enough) |
+| GitHub Pages | `https://abs-bear.github.io/Setvice/` | Follows `main` via `.github/workflows/deploy-pages.yml` |
+| GitHub OAuth App | Org-owned app on ABS-Bear (CMS login) | Customer/company org admin. Callback: `https://abservice-leads-v2.vercel.app/api/cms-callback` |
+| Vercel project | `abservice-leads-v2` | See ownership follow-up below |
+| Telegram bot | Company bot used by `/api/lead` | Company Owner; contractor only when rotating token/webhook |
+| Telegram CRM group | Company operations chat | Company CRM operators; contractor only for incidents |
+| CMS | `https://abs-bear.github.io/Setvice/admin/` | Marketer via GitHub **Write** on `Setvice` |
+| Production API | `https://abservice-leads-v2.vercel.app` | Contractor/company ops (Vercel project access) |
+| Lead endpoint | `https://abservice-leads-v2.vercel.app/api/lead` | Public POST from customer Pages origin only |
+
+No tokens, client secrets or passwords belong in this table or anywhere in git.
+
+## Vercel ownership follow-up (not a production blocker)
+
+The live project `abservice-leads-v2` is currently in Vercel scope **`alecmonopoly84-2297s-projects`**. That is **not** a customer-owned team.
+
+Production works. Transferring the project (or recreating it) into a customer Vercel team is an **organizational handover follow-up**, not a reason to treat the site as incomplete. Do not invent a completed transfer.
+
+Until that transfer, the contractor can still roll back Vercel (`docs/ROLLBACK.md`) and the company still owns GitHub, Pages, OAuth App and Telegram.
+
+## First setup
 
 ```bash
 npm install
 npm run build
 npm run verify
 npm run test:webhook-security
+npm run test:cors
+npm run test:cms-auth
 ```
 
-For local frontend work:
+For local frontend work: `npm run dev`.
 
-```bash
-npm run dev
-```
+Backend env **names** are in `docs/DEPLOYMENT.md`. Values stay only in Vercel.
 
-For backend work, use the existing Vercel project and configure environment variable **names** documented in `docs/DEPLOYMENT.md` and `docs/TELEGRAM_CRM.md`. Do not commit secret values.
+## Product status
 
-## Required Accesses
-
-The company should own and provide:
-
-- customer GitHub repository `ABS-Bear/Setvice` (source remapped; push not done);
-- GitHub Pages settings;
-- Vercel project access;
-- Telegram bot token;
-- Telegram CRM chat/admin access;
-- Bitrix24 webhook or OAuth credentials only when that future integration is approved;
-- Yandex Metrika counter ID only when analytics is approved;
-- domain/DNS access;
-- Decap CMS authentication setup (still required — see below).
-
-## Product Status
-
-- Service and parts pages preserve the current production copy, contacts, forms and visual direction.
-- Legacy `prices.json` home strip is unchanged; service-level optional price fields exist in CMS only.
-- `/stationary-service/` uses approved scope copy (not holding), without stock media or invented prices.
+- Service and parts pages preserve production copy, contacts, forms and visual direction.
+- Legacy `prices.json` home strip is unchanged; service-level optional price fields exist in CMS.
+- `/stationary-service/` uses approved scope copy, without stock media or invented prices.
 - `/articles/` is a materials feed; drafts are not generated, linked from the index or added to sitemap.
 - Telegram CRM is the **only active** lead channel. Production smoke-test (lead + CRM button) is confirmed with webhook security enabled.
+- CMS acceptance test (GitHub login + harmless publish) **PASS**. The temporary `cms-test` article is **not** in the content layer.
 - Bitrix24 and Yandex Metrika remain **post-launch / future**.
 - `api/callback-v3.js` is a legacy fallback: GET read-only/disabled for webhook mutation; POST requires the webhook secret. Do not point the live webhook at this file.
 - `contacts.json` is public corporate content only; personal/internal/secrets are forbidden.
 
 ## Risks / TBD
 
-- CMS OAuth implementation is ready locally; production OAuth App/env is not configured. Marketers must not treat `/Setvice/admin/` as a live production CMS until Stage 2.
-- Source is remapped to `ABS-Bear/Setvice` and Pages URL `https://abs-bear.github.io/Setvice/`. Pages is live; CMS production OAuth App/env is not configured.
-- Source CORS allows only `https://abs-bear.github.io` after the confirmed Setvice Pages cutover.
+- Vercel project scope is still contractor-owned (`alecmonopoly84-2297s-projects`) — follow-up transfer.
 - Bitrix24 field mapping needs real CRM pipeline details.
 - Yandex Metrika goal names should be confirmed with marketing.
 - Stationary service still needs owner-approved photos before any media is shown.
-- Additional live form tests still create Telegram leads and need owner approval before execution.
+- Additional live form tests still create Telegram leads and need owner approval.
 - Preview/custom-domain CORS origins must be added before live testing from those origins.
-- Vercel must keep `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `TELEGRAM_INTERNAL_ID` and `TELEGRAM_WEBHOOK_SECRET` or CRM / webhook updates fail closed.
+- Vercel must keep `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `TELEGRAM_INTERNAL_ID`, `TELEGRAM_WEBHOOK_SECRET`, `GITHUB_OAUTH_CLIENT_ID` and `GITHUB_OAUTH_CLIENT_SECRET` or CRM / CMS login fail closed.
 - Do not `GET /api/lead` in production.
 
-## CMS production auth — what to close before handover
+## Separate confirmation still required
 
-Leave this as an explicit open task. Required before the marketer edits production content through Decap:
-
-1. Create an ABS-Bear org GitHub OAuth App. Callback URL: `https://abservice-leads-v2.vercel.app/api/cms-callback`. Homepage: `https://abs-bear.github.io/Setvice/`.
-2. Set Vercel `GITHUB_OAUTH_CLIENT_ID` and `GITHUB_OAUTH_CLIENT_SECRET` on `abservice-leads-v2` (names only in git).
-3. Deploy the CMS proxy (separate approval). Do not change Telegram env/webhook.
-4. Invite the marketer as Write collaborator on `ABS-Bear/Setvice` only.
-5. `publish_mode: simple` stays.
-6. Confirm admin remains noindex / robots-disallowed at `/Setvice/admin/`.
-7. After Stage 2, do a logged-in CMS publish test on a harmless draft, not on prices or contacts.
-
-Until those steps are done, local file edits under `src/content/` remain the safe content path.
-
-## Gate 3C (now in production)
-
-- Local branch: `gate3c-telegram-webhook-security-2026-09-07`.
-- Unified endpoint remains `api/lead.js`. Legacy `api/callback-v3.js` POST also requires the webhook secret; GET stays legacy-disabled.
-- CRM UX, statuses, reports, frontend copy, `TELEGRAM_BOT_TOKEN`, and Telegram chat/internal IDs are unchanged by this documentation release.
-- Offline webhook-secret tests: `npm run test:webhook-security`.
-
-## Separate Confirmation Required
-
-- Push to remote / upload to customer GitHub.
-- Merge into main.
-- Further production deployment.
-- Vercel env or Telegram webhook changes.
+- Vercel project transfer to a customer-owned team.
+- Vercel env or Telegram webhook changes / secret rotation.
 - Real Bitrix24 lead sending.
 - Enabling Yandex Metrika.
-- Enabling production Decap CMS auth.
-- Replacing or deleting legacy files.
+- Replacing or deleting legacy files (`api/callback-v3.js`, root legacy HTML).
+- Force-push or moving tag `v1.0.0` (never do this).

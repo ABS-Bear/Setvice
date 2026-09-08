@@ -1,32 +1,44 @@
 # Operations
 
-## Current Production-Safe State
+## Current production-safe state
 
-- Frontend: static Astro build for GitHub Pages at `https://abs-bear.github.io/Setvice/` (source remapped; push/Pages not enabled yet).
+- Frontend: GitHub Pages `https://abs-bear.github.io/Setvice/` from customer `main`.
 - Active lead channel: Telegram CRM through `https://abservice-leads-v2.vercel.app/api/lead`.
-- Webhook security: **enabled** (`X-Telegram-Bot-Api-Secret-Token` vs `TELEGRAM_WEBHOOK_SECRET`).
-- Current Vercel production deployment: `dpl_84tMye42AgtbdKoDhwm2fT8EdSEs`.
-- Vercel rollback deployment: `dpl_A6yDU8GxhpLNSnFvAmWG6nmpHoDz`.
-- Frontend forms POST leads only; do not use browser page-load GET to activate or install the Telegram webhook. Do **not** `GET /api/lead` in production.
-- CORS allows only `https://abs-bear.github.io`. `localhost` and the previous Pages origin are rejected. No `*`.
-- Backend: Vercel Function at `api/lead.js`.
-- Legacy fallback: `api/callback-v3.js` (GET legacy-disabled/read-only; POST requires webhook secret).
-- Bitrix24: post-launch / future, disabled by default.
-- Yandex Metrika: post-launch / future, disabled until a real counter ID is provided.
-- CMS: Decap CMS config exists for local validation. **Production CMS authentication is not enabled.**
-- v1.0.0 / Gate 3C production smoke-test (2026-09-07): **manually confirmed** — lead arrives; CRM button works. No chat/user IDs in docs.
+- Webhook security: **enabled**.
+- CMS: production admin at `https://abs-bear.github.io/Setvice/admin/` — GitHub login, **operational**.
+- Current Vercel production: `dpl_9QJvwSs9GsiU2tAyxFTf6tLgvhfw`.
+- Vercel rollback: `dpl_F4Umk6QvmjUqhjTXZP7awRuNrTdq`.
+- CORS allows only `https://abs-bear.github.io`. Previous Pages origin and localhost are rejected. No `*`.
+- Bitrix24: post-launch / future, disabled.
+- Yandex Metrika: post-launch / future, disabled.
+- Do **not** `GET /api/lead` in production.
 
-## Daily Content Work
+## Critical incidents
 
-Use Decap CMS **locally** or edit files under `src/content/`. Do not treat production `/admin/` as authenticated until the CMS handover task is closed.
+Treat as critical: site down, forms not submitting, Telegram CRM buttons / reports failing.
 
-The content layer is the source of truth for phone, contacts, legacy home prices, optional service-level price fields, service text, parts text, stationary-service scope copy, articles landing copy, business directions, SEO metadata and article status.
+1. Notify the head of the direction **and** the contractor.
+2. Check GitHub Pages workflow on `ABS-Bear/Setvice` `main`.
+3. Check Vercel deployment `abservice-leads-v2` is Ready and aliased to `https://abservice-leads-v2.vercel.app`.
+4. Do not rotate Telegram or OAuth secrets during the first response unless that is the confirmed cause.
+5. Rollback is available to the company and the contractor — see `docs/ROLLBACK.md` (frontend via revert + Pages; backend via Vercel promotion).
 
-`src/content/settings/contacts.json` must hold only intentionally public corporate data (brand, region, public phone display/href, public legal line, public `siteUrl`). Personal, internal, and secret values are forbidden.
+## CMS marketer workflow
 
-Do not edit generated `dist/` files by hand.
+Daily content: `https://abs-bear.github.io/Setvice/admin/` → Login with GitHub → edit → Publish. That creates a commit on `main` and a Pages rebuild. Details: `docs/ADMIN_GUIDE.md`.
 
-## Lead Handling
+Do not use Vercel, Telegram, Cursor or Terminal for ordinary copy/photo updates.
+
+## Change history
+
+Git on `ABS-Bear/Setvice` and `CHANGELOG.md` are the change history. Tag `v1.0.1` marks this handover. Do not move `v1.0.0`.
+
+## Quarterly checks
+
+- **Dependency review:** `npm audit` / Astro and Vercel CLI currency; apply patches on a branch, not directly on production env.
+- **Health check:** Pages 200; admin 200 + noindex; one owner-approved lead + CRM button (creates a real Telegram lead); CMS login still works; CORS still only customer Pages.
+
+## Lead handling
 
 All public forms submit to the Telegram CRM endpoint. Telegram buttons keep the existing flow:
 
@@ -36,22 +48,20 @@ All public forms submit to the Telegram CRM endpoint. Telegram buttons keep the 
 
 The `/report` command is handled by the same Telegram CRM backend.
 
-## Release Safeguards
+## Release safeguards
 
-v1.0.0 is a local release snapshot. These actions require separate confirmation:
+These still need a separate decision:
 
-- push to remote / upload to customer GitHub;
-- merge into `main`;
-- further production deploy;
-- change Vercel env or Telegram webhook;
+- Vercel env or Telegram webhook changes;
 - enable Bitrix24;
 - enable Yandex Metrika;
-- enable production Decap CMS auth;
-- delete or replace legacy backend files.
+- transfer Vercel project to a customer-owned team;
+- delete or replace legacy backend files;
+- force-push or retag `v1.0.0`.
 
-## Legacy State
+## Legacy state
 
-- `api/callback-v3.js` stays in place as legacy fallback. Do not point the live webhook at it.
-- `archive/legacy/github-pages-field-service.zip` keeps the old GitHub Pages package out of the project root without deleting it.
+- `api/callback-v3.js` stays as legacy fallback. Do not point the live webhook at it.
+- `archive/legacy/github-pages-field-service.zip` keeps the old GitHub Pages package.
 
-See `docs/ROLLBACK.md` for local and Vercel rollback guidance.
+See `docs/ROLLBACK.md` and `docs/HANDOVER.md`.

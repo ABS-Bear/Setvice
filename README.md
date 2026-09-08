@@ -1,25 +1,31 @@
 # ABService
 
-Public website and lead backend for ABService. This repository is the **v1.0.0 production release** snapshot.
+Public website and lead backend for ABService. This repository is the **v1.0.1 production / handover** snapshot.
 
-- Frontend: static Astro site (Service, Parts, Stationary Service, SEO articles).
-- Content: `src/content/` plus Decap CMS config (local / future production editing).
-- Leads: Vercel Function Telegram CRM at `/api/lead`.
+- **Customer-owned repo:** [`ABS-Bear/Setvice`](https://github.com/ABS-Bear/Setvice)
+- **Frontend:** static Astro site on GitHub Pages — [https://abs-bear.github.io/Setvice/](https://abs-bear.github.io/Setvice/)
+- **Backend:** Vercel Functions — [https://abservice-leads-v2.vercel.app](https://abservice-leads-v2.vercel.app)
+- **CMS:** Decap at [https://abs-bear.github.io/Setvice/admin/](https://abs-bear.github.io/Setvice/admin/) (GitHub login, company-owned OAuth)
+- **Leads:** Telegram CRM at `/api/lead` (active production)
+- **Bitrix24 adapter:** future / disabled
+- **Yandex Metrika:** post-launch / disabled
 
 Do not commit tokens, webhook secrets, `.env` values, chat/user IDs, or other credentials.
 
-## v1.0.0 production state
+## v1.0.1 production state
 
 | Area | Status |
 |------|--------|
+| Customer GitHub | **ABS-Bear/Setvice** (`main`) |
+| GitHub Pages | **Live** — `https://abs-bear.github.io/Setvice/` |
 | Telegram CRM | **Active production** |
 | Webhook security | **Enabled** (`X-Telegram-Bot-Api-Secret-Token` vs `TELEGRAM_WEBHOOK_SECRET`) |
 | Lead endpoint | `https://abservice-leads-v2.vercel.app/api/lead` |
-| Current Vercel production deployment | `dpl_84tMye42AgtbdKoDhwm2fT8EdSEs` |
-| Vercel rollback deployment | `dpl_A6yDU8GxhpLNSnFvAmWG6nmpHoDz` |
+| Current Vercel production | `dpl_9QJvwSs9GsiU2tAyxFTf6tLgvhfw` |
+| Vercel rollback | `dpl_F4Umk6QvmjUqhjTXZP7awRuNrTdq` |
+| Decap CMS production auth | **Operational** |
 | Bitrix24 | Post-launch / future (disabled) |
 | Yandex Metrika | Post-launch / future (disabled) |
-| Decap CMS production auth | **Not closed** — handover / release task |
 
 Ordinary frontend lead POSTs do not send the Telegram webhook secret header and must keep working without it.
 
@@ -33,6 +39,8 @@ npm run lint
 npm run build
 npm run verify
 npm run test:webhook-security
+npm run test:cors
+npm run test:cms-auth
 npm run dev
 ```
 
@@ -43,26 +51,27 @@ npm run dev
 - `docs/ARCHITECTURE.md` — system shape
 - `docs/DEVELOPMENT.md` — local development
 - `docs/DEPLOYMENT.md` — GitHub Pages frontend + Vercel backend
-- `docs/ADMIN_GUIDE.md` — CMS editing rules
-- `docs/HANDOVER.md` — contractor handover
-- `docs/ROLLBACK.md` — local and production rollback
+- `docs/ADMIN_GUIDE.md` — marketer CMS workflow
+- `docs/HANDOVER.md` — contractor handover and access registry
+- `docs/ROLLBACK.md` — frontend and Vercel rollback
 - `docs/TELEGRAM_CRM.md` — lead / CRM operations
-- `docs/OPERATIONS.md` — day-to-day production-safe notes
+- `docs/OPERATIONS.md` — incidents and day-to-day notes
 - `CHANGELOG.md` — release history
 
-## Repository / Pages target
+## Production URLs
 
-- GitHub: `https://github.com/ABS-Bear/Setvice`
-- GitHub Pages: `https://abs-bear.github.io/Setvice/`
-- Astro base: `/Setvice`
-- Decap `backend.repo`: `ABS-Bear/Setvice`
+| Surface | URL |
+|---------|-----|
+| Site | `https://abs-bear.github.io/Setvice/` |
+| CMS | `https://abs-bear.github.io/Setvice/admin/` |
+| API | `https://abservice-leads-v2.vercel.app` |
+| Lead | `https://abservice-leads-v2.vercel.app/api/lead` |
+| Repo | `https://github.com/ABS-Bear/Setvice` |
 
-Local source is remapped. The customer remote is **not connected or pushed yet**. Do not use the old `alecmonopoly84-hue/ArcticBear` origin.
+Do not use `alecmonopoly84-hue/ArcticBear` as production or canonical remote.
 
-## Open before customer GitHub / CMS handover
+## Follow-ups (not current production blockers)
 
-1. Add the customer remote and push (separate approval). Do not use the old origin.
-2. Enable GitHub Pages on `ABS-Bear/Setvice` (GitHub Actions / `main`).
-3. Close **CMS production auth** (OAuth or compatible gateway, editor accounts, production branch). Until then, marketers should not treat `/Setvice/admin/` as a production CMS.
-4. Keep Bitrix24 and Yandex Metrika off until separately approved.
-5. Production CORS allows only `https://abs-bear.github.io`. Do not change Telegram webhook/env.
+- Move the Vercel project out of contractor scope `alecmonopoly84-2297s-projects` into a customer-owned Vercel team (see `docs/HANDOVER.md`).
+- Keep Bitrix24 and Yandex Metrika off until separately approved.
+- Do not change Telegram webhook/env without a separate operations decision.
