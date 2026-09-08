@@ -15,9 +15,12 @@
 
 ## v1.0.0 — CORS migration allowlist (2026-09-08)
 
-- Temporary dual frontend CORS allowlist for the customer repo cutover: `https://alecmonopoly84-hue.github.io` (**TEMPORARY MIGRATION ALLOWLIST**) and `https://abs-bear.github.io`.
-- `localhost` and arbitrary origins are rejected. No `*`.
-- Remove the old Pages origin in a separate post-cutover commit after `https://abs-bear.github.io/Setvice/` is live.
+- Dual frontend CORS allowlist during customer repo cutover; removed after confirmed Setvice Pages smoke-test.
+
+## Post-cutover — single Pages origin (2026-09-08)
+
+- CORS allowlist is only `https://abs-bear.github.io`.
+- Previous GitHub Pages origin, `localhost`, and arbitrary origins are rejected. No `*`.
 
 ## Gate 3C — Telegram webhook secret (2026-09-07)
 

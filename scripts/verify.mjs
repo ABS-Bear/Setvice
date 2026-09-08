@@ -163,9 +163,9 @@ if (!/repo:\s*ABS-Bear\/Setvice/.test(adminYml)) fail('Decap backend.repo is not
 const lead = read(join(root, 'api/lead.js'));
 const cb = read(join(root, 'api/callback-v3.js'));
 const corsLib = read(join(root, 'api/lib/cors-origins.js'));
-if (!corsLib.includes('https://alecmonopoly84-hue.github.io')) fail('CORS missing TEMPORARY old Pages origin');
 if (!corsLib.includes('https://abs-bear.github.io')) fail('CORS missing customer Pages origin');
-if (!/TEMPORARY MIGRATION ALLOWLIST/.test(corsLib)) fail('CORS missing TEMPORARY MIGRATION ALLOWLIST marker');
+if (corsLib.includes('https://alecmonopoly84-hue.github.io')) fail('CORS still lists the legacy Pages origin');
+if (/TEMPORARY MIGRATION ALLOWLIST/.test(corsLib)) fail('CORS still has TEMPORARY MIGRATION ALLOWLIST marker');
 if (/['"]\s*\*\s*['"]/.test(corsLib)) fail('CORS uses wildcard origin');
 if (!/isAllowedFrontendOrigin/.test(lead) || !/isAllowedFrontendOrigin/.test(cb)) fail('lead/callback-v3 missing shared CORS allowlist');
 if (!existsSync(join(root, 'scripts/cors-origins.test.mjs'))) fail('CORS tests missing');

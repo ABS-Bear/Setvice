@@ -8,7 +8,7 @@
 - Current Vercel production deployment: `dpl_84tMye42AgtbdKoDhwm2fT8EdSEs`.
 - Vercel rollback deployment: `dpl_A6yDU8GxhpLNSnFvAmWG6nmpHoDz`.
 - Frontend forms POST leads only; do not use browser page-load GET to activate or install the Telegram webhook. Do **not** `GET /api/lead` in production.
-- CORS source allowlist is both Pages origins during migration: old `https://alecmonopoly84-hue.github.io` (**TEMPORARY MIGRATION ALLOWLIST**, remove after cutover) and `https://abs-bear.github.io`. `localhost` is rejected. No `*`.
+- CORS allows only `https://abs-bear.github.io`. `localhost` and the previous Pages origin are rejected. No `*`.
 - Backend: Vercel Function at `api/lead.js`.
 - Legacy fallback: `api/callback-v3.js` (GET legacy-disabled/read-only; POST requires webhook secret).
 - Bitrix24: post-launch / future, disabled by default.

@@ -19,11 +19,11 @@ npm run test:cors
 `npm run build` runs Astro checks before creating the static frontend in `dist/`.
 `npm run verify` is a dependency-free post-build check for internal links/assets/base paths and production readiness assertions.
 `npm run test:webhook-security` is an offline, mocked check of Telegram webhook secret verification (19 cases). It does not call Telegram or Vercel.
-`npm run test:cors` checks the migration CORS allowlist: old Pages origin allowed, new Pages origin allowed, localhost rejected, arbitrary origin rejected.
+`npm run test:cors` checks the production CORS allowlist: customer Pages origin allowed; previous Pages origin, localhost, and arbitrary origins rejected.
 
 ## Local Preview
 
-The Astro dev server serves the frontend. `src/content/settings/integrations.json` points forms to the deployed Telegram CRM endpoint, so local form tests can create real Telegram leads if the owner approves them. A browser `Origin` of `localhost` / `127.0.0.1` is **rejected** by the lead API (403). Use a Pages origin from the migration allowlist for live form tests.
+The Astro dev server serves the frontend. `src/content/settings/integrations.json` points forms to the deployed Telegram CRM endpoint, so local form tests can create real Telegram leads if the owner approves them. A browser `Origin` of `localhost` / `127.0.0.1` is **rejected** by the lead API (403). Live form tests must use `https://abs-bear.github.io`.
 
 Do not submit real Telegram leads during visual QA unless the owner explicitly approves a live test.
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Offline CORS allowlist tests for the customer Pages migration.
+ * Offline CORS allowlist tests after Setvice Pages cutover.
  * Fetch is fully mocked; no network. Does not print secrets or PII.
  */
 import { dirname, join } from 'node:path';
@@ -8,11 +8,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   ALLOWED_FRONTEND_ORIGINS,
   CUSTOMER_PAGES_ORIGIN,
-  TEMPORARY_LEGACY_PAGES_ORIGIN,
   isAllowedFrontendOrigin
 } from '../api/lib/cors-origins.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const LEGACY_PAGES_ORIGIN = 'https://alecmonopoly84-hue.github.io';
 const errors = [];
 let passed = 0;
 
@@ -72,25 +72,15 @@ function request(path, { method = 'POST', origin, body } = {}) {
 }
 
 if (ALLOWED_FRONTEND_ORIGINS.includes('*')) fail('allowlist', 'wildcard origin is present');
-else if (ALLOWED_FRONTEND_ORIGINS.length !== 2) fail('allowlist', `expected 2 origins, got ${ALLOWED_FRONTEND_ORIGINS.length}`);
-else if (!isAllowedFrontendOrigin(TEMPORARY_LEGACY_PAGES_ORIGIN)) fail('allowlist', 'old production origin missing');
-else if (!isAllowedFrontendOrigin(CUSTOMER_PAGES_ORIGIN)) fail('allowlist', 'new customer origin missing');
+else if (ALLOWED_FRONTEND_ORIGINS.length !== 1) fail('allowlist', `expected 1 origin, got ${ALLOWED_FRONTEND_ORIGINS.length}`);
+else if (!isAllowedFrontendOrigin(CUSTOMER_PAGES_ORIGIN)) fail('allowlist', 'customer origin missing');
+else if (isAllowedFrontendOrigin(LEGACY_PAGES_ORIGIN)) fail('allowlist', 'legacy origin still allowed');
 else if (isAllowedFrontendOrigin('http://localhost:4321') || isAllowedFrontendOrigin('http://127.0.0.1')) fail('allowlist', 'localhost is allowed');
 else if (isAllowedFrontendOrigin('https://evil.example')) fail('allowlist', 'arbitrary origin is allowed');
-else ok('allowlist is exactly old + new Pages origins');
+else ok('allowlist is exactly the customer Pages origin');
 
 const { POST: leadPost, OPTIONS: leadOptions } = await import(pathToFileURL(join(root, 'api/lead.js')).href);
 const { POST: callbackPost, OPTIONS: callbackOptions } = await import(pathToFileURL(join(root, 'api/callback-v3.js')).href);
-
-{
-  const origin = TEMPORARY_LEGACY_PAGES_ORIGIN;
-  const pre = await leadOptions(request('/api/lead', { method: 'OPTIONS', origin }));
-  const res = await leadPost(request('/api/lead', { origin }));
-  const body = await res.json();
-  if (pre.status !== 204 || acao(pre) !== origin) fail('old origin OPTIONS', `status=${pre.status} acao=${acao(pre)}`);
-  else if (res.status !== 200 || !body.ok || acao(res) !== origin) fail('old origin POST', `status=${res.status} acao=${acao(res)}`);
-  else ok('old production origin → allowed');
-}
 
 {
   const origin = CUSTOMER_PAGES_ORIGIN;
@@ -99,7 +89,18 @@ const { POST: callbackPost, OPTIONS: callbackOptions } = await import(pathToFile
   const body = await res.json();
   if (pre.status !== 204 || acao(pre) !== origin) fail('new origin OPTIONS', `status=${pre.status} acao=${acao(pre)}`);
   else if (res.status !== 200 || !body.ok || acao(res) !== origin) fail('new origin POST', `status=${res.status} acao=${acao(res)}`);
-  else ok('new customer origin → allowed');
+  else ok('new origin → allowed');
+}
+
+{
+  const origin = LEGACY_PAGES_ORIGIN;
+  const pre = await leadOptions(request('/api/lead', { method: 'OPTIONS', origin }));
+  const res = await leadPost(request('/api/lead', { origin }));
+  const body = await res.json();
+  if (acao(pre) === origin || acao(pre) === '*') fail('old origin OPTIONS', `acao=${acao(pre)}`);
+  else if (res.status !== 403 || body.error !== 'Origin not allowed' || acao(res) === origin || acao(res) === '*') {
+    fail('old origin POST', `status=${res.status} acao=${acao(res)}`);
+  } else ok('old origin → rejected');
 }
 
 {
@@ -125,17 +126,19 @@ const { POST: callbackPost, OPTIONS: callbackOptions } = await import(pathToFile
 }
 
 {
-  const origin = TEMPORARY_LEGACY_PAGES_ORIGIN;
-  const pre = await callbackOptions(request('/api/callback-v3', { method: 'OPTIONS', origin }));
-  if (pre.status !== 204 || acao(pre) !== origin) fail('callback-v3 old OPTIONS', `status=${pre.status} acao=${acao(pre)}`);
-  else ok('callback-v3 old production origin → allowed');
-}
-
-{
   const origin = CUSTOMER_PAGES_ORIGIN;
   const pre = await callbackOptions(request('/api/callback-v3', { method: 'OPTIONS', origin }));
   if (pre.status !== 204 || acao(pre) !== origin) fail('callback-v3 new OPTIONS', `status=${pre.status} acao=${acao(pre)}`);
-  else ok('callback-v3 new customer origin → allowed');
+  else ok('callback-v3 new origin → allowed');
+}
+
+{
+  const origin = LEGACY_PAGES_ORIGIN;
+  const res = await callbackPost(request('/api/callback-v3', { origin, body: { update_id: 1 } }));
+  const body = await res.json();
+  if (res.status !== 403 || body.error !== 'Origin not allowed' || acao(res) === '*' || acao(res) === origin) {
+    fail('callback-v3 old origin', `status=${res.status} acao=${acao(res)}`);
+  } else ok('callback-v3 old origin → rejected');
 }
 
 {
