@@ -4,7 +4,7 @@
 
 - Astro static frontend (Service, Parts, Stationary Service, SEO articles).
 - Structured editable content in `src/content/`.
-- Decap CMS configuration in `public/admin/` — local schema only; **production auth is not closed**.
+- Decap CMS configuration in `public/admin/` plus a local company-owned OAuth proxy. **CMS OAuth implementation is ready locally; production OAuth App/env is not configured.**
 - Preserved Vercel Functions backend in `api/` with Telegram webhook secret verification.
 - Bitrix24 adapter stub and env names (post-launch / future, disabled).
 - Documentation for development, admin, deployment, operations, Telegram CRM and rollback.
@@ -70,8 +70,8 @@ The company should own and provide:
 
 ## Risks / TBD
 
-- **CMS production authentication is not closed.** Marketers must not treat `/Setvice/admin/` as a live production CMS.
-- Source is remapped to `ABS-Bear/Setvice` and Pages URL `https://abs-bear.github.io/Setvice/`. Push / Pages enablement is still pending.
+- CMS OAuth implementation is ready locally; production OAuth App/env is not configured. Marketers must not treat `/Setvice/admin/` as a live production CMS until Stage 2.
+- Source is remapped to `ABS-Bear/Setvice` and Pages URL `https://abs-bear.github.io/Setvice/`. Pages is live; CMS production OAuth App/env is not configured.
 - Source CORS allows only `https://abs-bear.github.io` after the confirmed Setvice Pages cutover.
 - Bitrix24 field mapping needs real CRM pipeline details.
 - Yandex Metrika goal names should be confirmed with marketing.
@@ -85,13 +85,13 @@ The company should own and provide:
 
 Leave this as an explicit open task. Required before the marketer edits production content through Decap:
 
-1. This release is uploaded to `ABS-Bear/Setvice` (separate approval; not done).
-2. `public/admin/config.yml` already uses `backend.repo: ABS-Bear/Setvice` and `branch: main`.
-3. GitHub OAuth app or Decap-compatible auth gateway is configured for `https://abs-bear.github.io/Setvice/admin/`.
-4. Editor accounts have the minimum repository permission to commit content.
-5. Decide `publish_mode: simple` vs editorial workflow.
+1. Create an ABS-Bear org GitHub OAuth App. Callback URL: `https://abservice-leads-v2.vercel.app/api/cms-callback`. Homepage: `https://abs-bear.github.io/Setvice/`.
+2. Set Vercel `GITHUB_OAUTH_CLIENT_ID` and `GITHUB_OAUTH_CLIENT_SECRET` on `abservice-leads-v2` (names only in git).
+3. Deploy the CMS proxy (separate approval). Do not change Telegram env/webhook.
+4. Invite the marketer as Write collaborator on `ABS-Bear/Setvice` only.
+5. `publish_mode: simple` stays.
 6. Confirm admin remains noindex / robots-disallowed at `/Setvice/admin/`.
-7. Do a logged-in CMS publish test on a harmless draft, not on prices or contacts, after auth works.
+7. After Stage 2, do a logged-in CMS publish test on a harmless draft, not on prices or contacts.
 
 Until those steps are done, local file edits under `src/content/` remain the safe content path.
 

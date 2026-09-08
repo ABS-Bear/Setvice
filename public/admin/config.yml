@@ -2,11 +2,14 @@ backend:
   name: github
   repo: ABS-Bear/Setvice
   branch: main
+  base_url: https://abservice-leads-v2.vercel.app
+  auth_endpoint: api/cms-auth
+  site_domain: abs-bear.github.io
 
 local_backend: true
 
 media_folder: public/media
-public_folder: /media
+public_folder: /Setvice/media
 
 publish_mode: simple
 

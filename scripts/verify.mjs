@@ -159,6 +159,22 @@ if (/name: author/.test(adminYml)) fail('Decap articles still has author');
 if (!/name: priceNote/.test(adminYml)) fail('Decap services missing priceNote');
 if (!/name: slug/.test(adminYml)) fail('Decap articles missing slug field');
 if (!/repo:\s*ABS-Bear\/Setvice/.test(adminYml)) fail('Decap backend.repo is not ABS-Bear/Setvice');
+if (!/base_url:\s*https:\/\/abservice-leads-v2\.vercel\.app/.test(adminYml)) fail('Decap missing company OAuth base_url');
+if (!/auth_endpoint:\s*api\/cms-auth/.test(adminYml)) fail('Decap missing company OAuth auth_endpoint');
+if (!/media_folder:\s*public\/media/.test(adminYml)) fail('Decap media_folder is not public/media');
+if (!/public_folder:\s*\/Setvice\/media/.test(adminYml)) fail('Decap public_folder is not /Setvice/media');
+{
+  const publicFolder = adminYml.match(/public_folder:\s*(\S+)/)?.[1] || '';
+  const cmsGenerated = `${publicFolder.replace(/\/$/, '')}/cms-new-upload.jpg`;
+  const withBaseLike = (path, base = basePrefix) => {
+    if (path === base || path.startsWith(`${base}/`)) return path;
+    return `${base}${path.startsWith('/') ? path : `/${path}`}`;
+  };
+  if (cmsGenerated !== '/Setvice/media/cms-new-upload.jpg') fail('CMS-generated media path is not /Setvice/media/...');
+  if (!cmsGenerated.startsWith(`${basePrefix}/`)) fail('CMS-generated media path missing Astro base prefix');
+  if (withBaseLike(cmsGenerated) !== cmsGenerated) fail('CMS-generated media path would be double-prefixed by withBase');
+  if (withBaseLike('/media/existing.jpg') !== '/Setvice/media/existing.jpg') fail('legacy /media path is not prefixed with /Setvice');
+}
 
 const lead = read(join(root, 'api/lead.js'));
 const cb = read(join(root, 'api/callback-v3.js'));
@@ -188,6 +204,17 @@ if (!/verifyTelegramWebhookSecret/.test(cb)) fail('callback-v3.js missing webhoo
 if (!existsSync(join(root, 'scripts/telegram-webhook-secret.test.mjs'))) fail('webhook secret tests missing');
 const envExample = read(join(root, '.env.example'));
 if (!/^TELEGRAM_WEBHOOK_SECRET=\s*$/m.test(envExample)) fail('.env.example must list empty TELEGRAM_WEBHOOK_SECRET=');
+if (!/^GITHUB_OAUTH_CLIENT_ID=\s*$/m.test(envExample) || !/^GITHUB_OAUTH_CLIENT_SECRET=\s*$/m.test(envExample)) {
+  fail('.env.example must list empty GitHub OAuth placeholders');
+}
+if (!existsSync(join(root, 'api/cms-auth.js')) || !existsSync(join(root, 'api/cms-callback.js'))) fail('CMS OAuth proxy endpoints missing');
+if (!existsSync(join(root, 'scripts/cms-oauth.test.mjs'))) fail('CMS OAuth tests missing');
+if (/cms-oauth|GITHUB_OAUTH_/.test(lead) || /cms-oauth|GITHUB_OAUTH_/.test(cb)) fail('lead/callback-v3 must stay isolated from CMS OAuth');
+const cmsOauth = read(join(root, 'api/lib/cms-oauth.js'));
+if (/TELEGRAM_/.test(cmsOauth)) fail('CMS OAuth helper must not use TELEGRAM_*');
+if (!/GITHUB_OAUTH_CLIENT_ID/.test(cmsOauth) || !/GITHUB_OAUTH_CLIENT_SECRET/.test(cmsOauth)) fail('CMS OAuth helper missing GitHub env names');
+if (/Access-Control-Allow-Origin['"`:\s]+\*/.test(cmsOauth)) fail('CMS OAuth CORS uses wildcard origin');
+if (!cmsOauth.includes('https://abs-bear.github.io')) fail('CMS OAuth missing CMS frontend origin');
 
 // prices.json must be unchanged vs intentional non-touch; presence only here
 if (publicUrl.origin !== 'https://abs-bear.github.io' || basePrefix !== '/Setvice') {

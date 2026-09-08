@@ -1,6 +1,6 @@
 # Admin Guide
 
-Decap CMS is prepared under the site base path (`/Setvice/admin/`) for local editing and future production editing. **Production authentication is not enabled.** This is an open handover / release task, not a finished production CMS. Admin is noindex and disallowed in robots with the same base-prefixed paths.
+Decap CMS is prepared under the site base path (`/Setvice/admin/`). Company-owned GitHub OAuth proxy code is ready locally (`/api/cms-auth`, `/api/cms-callback`). **Production OAuth App / env is not configured.** Do not treat `/admin/` as a finished production CMS until Stage 2. Admin is noindex and disallowed in robots with the same base-prefixed paths.
 
 ## Contacts (`settings/contacts.json`)
 
@@ -67,13 +67,27 @@ Do not publish logistics, route, timelines, guarantee wording, address or SLA cl
 
 ## Production CMS Auth — open handover / release task
 
-Do not treat Decap CMS as production-ready. `local_backend: true` is for local work. GitHub backend is set to `ABS-Bear/Setvice` and has no production OAuth / auth gateway yet.
+CMS OAuth implementation is ready locally; production OAuth App/env is not configured.
 
-Before enabling Decap CMS for the marketer in production, close all of the following:
+`local_backend: true` remains for local file edits. Production login uses GitHub backend `ABS-Bear/Setvice` / `main` / `publish_mode: simple` through:
 
-- push this repository to `ABS-Bear/Setvice` (not done yet);
-- GitHub OAuth provider or Decap-compatible auth gateway for `https://abs-bear.github.io/Setvice/admin/`;
-- final production branch;
-- editor GitHub accounts and repository permissions;
-- whether editorial workflow is required or `publish_mode: simple` remains acceptable;
-- confirm `/Setvice/admin/` stays noindex and robots-disallowed after Pages is enabled.
+```text
+base_url: https://abservice-leads-v2.vercel.app
+auth_endpoint: api/cms-auth
+```
+
+Callback URL for the future GitHub OAuth App:
+
+```text
+https://abservice-leads-v2.vercel.app/api/cms-callback
+```
+
+Media files are stored in `public/media`. CMS `public_folder` is `/Setvice/media` so newly uploaded images get a production URL under the Astro base path. Existing content that still uses `/media/...` is prefixed by `withBase` in the frontend.
+
+Before Stage 2 / marketer handover, close:
+
+- ABS-Bear GitHub OAuth App (org-owned, not a contractor personal app);
+- Vercel env names `GITHUB_OAUTH_CLIENT_ID` and `GITHUB_OAUTH_CLIENT_SECRET` (values never in git);
+- Vercel deploy of the CMS proxy;
+- editor GitHub account with Write only on `ABS-Bear/Setvice`;
+- confirm `/Setvice/admin/` stays noindex and robots-disallowed.

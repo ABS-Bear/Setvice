@@ -1,5 +1,12 @@
 # Changelog
 
+## CMS Auth Stage 1 — local OAuth proxy (2026-09-08)
+
+- Added isolated Decap GitHub OAuth proxy: `/api/cms-auth`, `/api/cms-callback`. Uses `GITHUB_OAUTH_CLIENT_ID` / `GITHUB_OAUTH_CLIENT_SECRET` only. No `TELEGRAM_*`, no `/api/lead` changes.
+- Decap `base_url` / `auth_endpoint` point at `https://abservice-leads-v2.vercel.app`. `public_folder` is `/Setvice/media`.
+- CMS OAuth implementation ready locally; production OAuth App/env not configured.
+- Offline tests: `npm run test:cms-auth`.
+
 ## v1.0.0 — ABService production release (2026-09-07)
 
 - Astro migration: static frontend from the previous GitHub Pages field-service site, with structured content under `src/content/`.

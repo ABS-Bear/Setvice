@@ -14,12 +14,14 @@ npm run build
 npm run verify
 npm run test:webhook-security
 npm run test:cors
+npm run test:cms-auth
 ```
 
 `npm run build` runs Astro checks before creating the static frontend in `dist/`.
 `npm run verify` is a dependency-free post-build check for internal links/assets/base paths and production readiness assertions.
 `npm run test:webhook-security` is an offline, mocked check of Telegram webhook secret verification (19 cases). It does not call Telegram or Vercel.
 `npm run test:cors` checks the production CORS allowlist: customer Pages origin allowed; previous Pages origin, localhost, and arbitrary origins rejected.
+`npm run test:cms-auth` is an offline, mocked check of the company-owned CMS OAuth proxy. It does not call GitHub, Vercel, or Telegram.
 
 ## Local Preview
 

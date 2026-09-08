@@ -111,15 +111,25 @@ Local `.env.example` may list empty placeholders for `TELEGRAM_CHAT_ID`, `TELEGR
 
 ## CMS
 
-Decap CMS uses GitHub as backend and is configured in `public/admin/config.yml`. The local schema is validated. **Production CMS authentication is not enabled** and must stay an explicit handover / release task. Do not describe `/admin/` as production-ready.
+Decap CMS uses the GitHub backend in `public/admin/config.yml` (`ABS-Bear/Setvice`, `main`, `publish_mode: simple`).
 
-Before production use, confirm:
+CMS OAuth implementation is ready locally; production OAuth App/env is not configured. The isolated proxy endpoints are:
 
-- customer repository `ABS-Bear/Setvice` (config already points here; push is not done);
-- production branch;
-- GitHub OAuth provider or compatible auth gateway for `https://abs-bear.github.io/Setvice/admin/`;
-- editor access for the marketer;
-- whether simple publishing is acceptable or editorial workflow is required.
+```text
+https://abservice-leads-v2.vercel.app/api/cms-auth
+https://abservice-leads-v2.vercel.app/api/cms-callback
+```
+
+Prepared Vercel env **names** (empty in `.env.example`; values only in Vercel later):
+
+```text
+GITHUB_OAUTH_CLIENT_ID
+GITHUB_OAUTH_CLIENT_SECRET
+```
+
+Do not put those values in git, frontend, or Decap config. The proxy is separate from `/api/lead` and must not use `TELEGRAM_*`. CMS browser Origin is only `https://abs-bear.github.io` (no `*`).
+
+Stage 2 still needs: org-owned GitHub OAuth App, Vercel env, proxy deploy, editor Write access. Do not describe `/admin/` as production-ready until those are done.
 
 ## Analytics
 

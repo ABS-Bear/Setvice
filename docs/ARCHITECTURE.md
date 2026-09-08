@@ -51,7 +51,7 @@ Decap CMS is mounted under the Astro base path (`/Setvice/admin/`; noindex / rob
 
 The CMS can edit content and media only. It does not expose Telegram token, Bitrix24 webhook, Vercel env vars, or backend source credentials.
 
-Decap CMS production authentication is **not enabled**. Treat `/admin/` as a local / future-handover surface, not a finished production CMS. See `docs/ADMIN_GUIDE.md` and `docs/HANDOVER.md`.
+CMS OAuth implementation is ready locally (`api/cms-auth.js`, `api/cms-callback.js` on the existing Vercel project `abservice-leads-v2`). Production OAuth App/env is not configured. The proxy is isolated from `/api/lead` and Telegram CRM: it uses only `GITHUB_OAUTH_CLIENT_ID` / `GITHUB_OAUTH_CLIENT_SECRET`, checks OAuth state, and allows browser Origin `https://abs-bear.github.io` (no `*`). New CMS uploads use `public_folder: /Setvice/media`. Treat `/admin/` as not handover-ready until Stage 2. See `docs/ADMIN_GUIDE.md` and `docs/HANDOVER.md`.
 
 ## Leads
 
