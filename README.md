@@ -50,9 +50,19 @@ npm run dev
 - `docs/OPERATIONS.md` — day-to-day production-safe notes
 - `CHANGELOG.md` — release history
 
+## Repository / Pages target
+
+- GitHub: `https://github.com/ABS-Bear/Setvice`
+- GitHub Pages: `https://abs-bear.github.io/Setvice/`
+- Astro base: `/Setvice`
+- Decap `backend.repo`: `ABS-Bear/Setvice`
+
+Local source is remapped. The customer remote is **not connected or pushed yet**. Do not use the old `alecmonopoly84-hue/ArcticBear` origin.
+
 ## Open before customer GitHub / CMS handover
 
-1. Create the customer-owned GitHub repository (this release is local-only; it is not uploaded yet).
-2. Remap `siteUrl`, Astro `base`, Decap `backend.repo`, and GitHub Pages settings to that repository.
-3. Close **CMS production auth** (OAuth or compatible gateway, editor accounts, production branch). Until then, marketers should not treat `/admin/` as a production CMS.
+1. Add the customer remote and push (separate approval). Do not use the old origin.
+2. Enable GitHub Pages on `ABS-Bear/Setvice` (GitHub Actions / `main`).
+3. Close **CMS production auth** (OAuth or compatible gateway, editor accounts, production branch). Until then, marketers should not treat `/Setvice/admin/` as a production CMS.
 4. Keep Bitrix24 and Yandex Metrika off until separately approved.
+5. A later approved Vercel deploy is required before the new Pages origin can submit leads (source CORS is already `https://abs-bear.github.io`). Do not change Telegram webhook/env.

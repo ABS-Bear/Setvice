@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://alecmonopoly84-hue.github.io/ArcticBear/sitemap.xml
+Sitemap: https://abs-bear.github.io/Setvice/sitemap.xml

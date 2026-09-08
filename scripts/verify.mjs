@@ -10,7 +10,10 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
-const basePrefix = '/ArcticBear';
+const contacts = JSON.parse(readFileSync(join(root, 'src/content/settings/contacts.json'), 'utf8'));
+const publicUrl = new URL(contacts.siteUrl);
+const basePrefix = publicUrl.pathname.replace(/\/$/, '');
+const pagesRoot = contacts.siteUrl.endsWith('/') ? contacts.siteUrl : `${contacts.siteUrl}/`;
 const errors = [];
 const notes = [];
 
@@ -49,7 +52,7 @@ for (const file of htmlFiles) {
     if (!href || href.startsWith('data:') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//') || href.startsWith('#')) {
       continue;
     }
-    if (href.startsWith('/ArcticBear/ArcticBear/')) {
+    if (basePrefix && href.startsWith(`${basePrefix}${basePrefix}/`)) {
       fail(`double base prefix in ${file}: ${href}`);
       continue;
     }
@@ -115,20 +118,23 @@ const sitemapPath = join(dist, 'sitemap.xml');
 if (!existsSync(robotsPath)) fail('robots.txt missing');
 else {
   const robots = read(robotsPath);
-  if (!/^Disallow:\s*\/ArcticBear\/admin\s*$/im.test(robots)) {
-    fail('robots.txt missing base-prefixed /ArcticBear/admin disallow');
+  const adminDisallow = `${basePrefix}/admin`;
+  const adminDisallowTrailing = `${basePrefix}/admin/`;
+  const sitemapUrl = `${pagesRoot}sitemap.xml`;
+  if (!new RegExp(`^Disallow:\\s*${adminDisallow.replace(/\//g, '\\/')}\\s*$`, 'im').test(robots)) {
+    fail(`robots.txt missing base-prefixed ${adminDisallow} disallow`);
   }
-  if (!/^Disallow:\s*\/ArcticBear\/admin\/\s*$/im.test(robots)) {
-    fail('robots.txt missing base-prefixed /ArcticBear/admin/ disallow');
+  if (!new RegExp(`^Disallow:\\s*${adminDisallowTrailing.replace(/\//g, '\\/')}\\s*$`, 'im').test(robots)) {
+    fail(`robots.txt missing base-prefixed ${adminDisallowTrailing} disallow`);
   }
-  if (!/Sitemap:\s*https:\/\/alecmonopoly84-hue\.github\.io\/ArcticBear\/sitemap\.xml/i.test(robots)) {
+  if (!robots.includes(`Sitemap: ${sitemapUrl}`)) {
     fail('robots.txt sitemap URL incorrect');
   }
 }
 if (!existsSync(sitemapPath)) fail('sitemap.xml missing');
 else {
   const sm = read(sitemapPath);
-  if (!sm.includes('https://alecmonopoly84-hue.github.io/ArcticBear/')) fail('sitemap missing GitHub Pages base URL');
+  if (!sm.includes(pagesRoot)) fail('sitemap missing GitHub Pages base URL');
   if (/gate2b-structure-placeholder/i.test(sm)) fail('draft article leaked into sitemap');
 }
 
@@ -152,9 +158,11 @@ const adminYml = read(join(root, 'public/admin/config.yml'));
 if (/name: author/.test(adminYml)) fail('Decap articles still has author');
 if (!/name: priceNote/.test(adminYml)) fail('Decap services missing priceNote');
 if (!/name: slug/.test(adminYml)) fail('Decap articles missing slug field');
+if (!/repo:\s*ABS-Bear\/Setvice/.test(adminYml)) fail('Decap backend.repo is not ABS-Bear/Setvice');
 
 const lead = read(join(root, 'api/lead.js'));
 const cb = read(join(root, 'api/callback-v3.js'));
+if (!/const ORIGIN='https:\/\/abs-bear\.github\.io'/.test(lead)) fail('lead.js CORS origin is not the Setvice Pages origin');
 if (!/TELEGRAM_CHAT_ID/.test(lead) || !/TELEGRAM_INTERNAL_ID/.test(lead)) fail('lead.js missing env identifier vars');
 if (!/TELEGRAM_CHAT_ID/.test(cb) || !/TELEGRAM_INTERNAL_ID/.test(cb)) fail('callback-v3.js missing env identifier vars');
 if (/const CHAT='-?\d+'/.test(lead) || /const INTERNAL='\d+'/.test(lead)) fail('lead.js still has literal chat/internal ids');
@@ -176,6 +184,9 @@ const envExample = read(join(root, '.env.example'));
 if (!/^TELEGRAM_WEBHOOK_SECRET=\s*$/m.test(envExample)) fail('.env.example must list empty TELEGRAM_WEBHOOK_SECRET=');
 
 // prices.json must be unchanged vs intentional non-touch; presence only here
+if (publicUrl.origin !== 'https://abs-bear.github.io' || basePrefix !== '/Setvice') {
+  fail('contacts.siteUrl must be the ABS-Bear/Setvice GitHub Pages URL');
+}
 if (!existsSync(join(root, 'src/content/settings/prices.json'))) fail('prices.json missing');
 
 // Tracked secret-like filenames should stay out of git tracking intent

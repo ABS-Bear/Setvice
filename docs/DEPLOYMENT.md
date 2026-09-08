@@ -17,9 +17,13 @@ Output directory:
 dist/
 ```
 
-The configured public URL is read from `src/content/settings/contacts.json` (`siteUrl`). For the current GitHub Pages domain it resolves to `/ArcticBear`.
+The configured public URL is read from `src/content/settings/contacts.json` (`siteUrl`). Target GitHub Pages:
 
-A customer-owned GitHub repository is **not uploaded yet**. Before the first customer Pages deploy, remap `siteUrl`, Astro `base`, Decap `backend.repo`, and Pages settings to that repository. Workflow: `.github/workflows/deploy-pages.yml` (push to `main` or `workflow_dispatch`).
+```text
+https://abs-bear.github.io/Setvice/
+```
+
+Repository: `ABS-Bear/Setvice`. Astro `base` is `/Setvice`. Workflow: `.github/workflows/deploy-pages.yml` (push to `main` or `workflow_dispatch`). Local source is remapped; the customer remote is **not connected or pushed yet**.
 
 ## Backend — current production (v1.0.0)
 
@@ -93,7 +97,7 @@ Bitrix24 must remain disabled until credentials and a separate integration appro
 
 ## CORS
 
-CORS currently allows the GitHub Pages origin and local development origins (`localhost` / `127.0.0.1`). Telegram webhook requests without `Origin` are accepted by the lead POST path. Do not use `*`. Add preview or custom-domain origins deliberately before using them for live form tests.
+Source CORS allows the Setvice GitHub Pages origin (`https://abs-bear.github.io`) and local development origins (`localhost` / `127.0.0.1`). Live Vercel still has the previous allowlist until a separately approved API deploy. Telegram webhook requests without `Origin` are accepted by the lead POST path. Do not use `*`. Add preview or custom-domain origins deliberately before using them for live form tests.
 
 `api/callback-v3.js` is legacy fallback: GET returns legacy-disabled/read-only status and does not mutate webhooks; POST requires the webhook secret. Do not rely on browser page-load GET against `/api/lead` for webhook activation; keep that server-side.
 
@@ -105,12 +109,11 @@ Decap CMS uses GitHub as backend and is configured in `public/admin/config.yml`.
 
 Before production use, confirm:
 
-- final customer GitHub repository name;
+- customer repository `ABS-Bear/Setvice` (config already points here; push is not done);
 - production branch;
-- GitHub OAuth provider or compatible auth gateway;
+- GitHub OAuth provider or compatible auth gateway for `https://abs-bear.github.io/Setvice/admin/`;
 - editor access for the marketer;
-- whether simple publishing is acceptable or editorial workflow is required;
-- Decap `backend.repo` updated away from the current placeholder repository.
+- whether simple publishing is acceptable or editorial workflow is required.
 
 ## Analytics
 

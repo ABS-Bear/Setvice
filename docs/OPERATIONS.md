@@ -2,7 +2,7 @@
 
 ## Current Production-Safe State
 
-- Frontend: static Astro build for GitHub Pages.
+- Frontend: static Astro build for GitHub Pages at `https://abs-bear.github.io/Setvice/` (source remapped; push/Pages not enabled yet).
 - Active lead channel: Telegram CRM through `https://abservice-leads-v2.vercel.app/api/lead`.
 - Webhook security: **enabled** (`X-Telegram-Bot-Api-Secret-Token` vs `TELEGRAM_WEBHOOK_SECRET`).
 - Current Vercel production deployment: `dpl_84tMye42AgtbdKoDhwm2fT8EdSEs`.

@@ -3,7 +3,7 @@ import { buildSetWebhookPayload, verifyTelegramWebhookSecret } from './lib/teleg
 const CHAT=process.env.TELEGRAM_CHAT_ID||'';
 const INTERNAL=process.env.TELEGRAM_INTERNAL_ID||'';
 const WEBHOOK='https://abservice-leads-v2.vercel.app/api/callback-v3';
-const ORIGIN='https://alecmonopoly84-hue.github.io';
+const ORIGIN='https://abs-bear.github.io';
 const LOCAL_ORIGIN=/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 const allowedOrigin=origin=>origin===ORIGIN||LOCAL_ORIGIN.test(String(origin||''));
 const corsOrigin=req=>{const origin=req.headers.get('origin')||'';return allowedOrigin(origin)?origin:''};

@@ -47,7 +47,7 @@ Content lives under `src/content/`:
 
 ## CMS
 
-Decap CMS is mounted under the Astro base path (for example `/ArcticBear/admin/`; noindex / robots deny with the same base-prefixed Disallow).
+Decap CMS is mounted under the Astro base path (`/Setvice/admin/`; noindex / robots deny with the same base-prefixed Disallow).
 
 The CMS can edit content and media only. It does not expose Telegram token, Bitrix24 webhook, Vercel env vars, or backend source credentials.
 
@@ -80,7 +80,7 @@ The site does not keep a separate full lead history.
 
 ## SEO
 
-Canonical URLs, Open Graph URLs, robots and sitemap are generated from `src/content/settings/contacts.json` and `src/content/settings/seo.json` for `https://alecmonopoly84-hue.github.io/ArcticBear/`. `robots.txt` Disallow for admin uses the Astro base helper (so `/ArcticBear/admin` and `/ArcticBear/admin/` are blocked). Draft articles are excluded from article pages and sitemap output. Empty articles index must be noindex.
+Canonical URLs, Open Graph URLs, robots and sitemap are generated from `src/content/settings/contacts.json` and `src/content/settings/seo.json` for `https://abs-bear.github.io/Setvice/`. `robots.txt` Disallow for admin uses the Astro base helper (so `/Setvice/admin` and `/Setvice/admin/` are blocked). Draft articles are excluded from article pages and sitemap output. Empty articles index must be noindex.
 
 ## Legacy Files
 

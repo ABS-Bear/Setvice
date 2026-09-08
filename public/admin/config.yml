@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: alecmonopoly84-hue/ArcticBear
+  repo: ABS-Bear/Setvice
   branch: main
 
 local_backend: true

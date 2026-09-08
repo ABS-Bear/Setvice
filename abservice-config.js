@@ -1,7 +1,7 @@
 (()=>{
   window.ABServiceConfig={
     brand:'ABService',
-    siteUrl:'https://alecmonopoly84-hue.github.io/ArcticBear/',
+    siteUrl:'https://abs-bear.github.io/Setvice/',
     servicePath:'',
     partsPath:'parts/',
     phone:{
