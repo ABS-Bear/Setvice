@@ -4,4 +4,6 @@ dist/
 .astro/
 .env
 .env.*
+.vercel
+.env*
 !.env.example
