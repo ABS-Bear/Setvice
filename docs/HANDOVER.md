@@ -23,9 +23,10 @@ Do not record tokens, webhook secrets, chat/user IDs, client secrets, or passwor
 |------|--------|
 | GitHub repo owner | Customer organization **ABS-Bear** (`ABS-Bear/Setvice`) |
 | Production frontend | `https://abs-bear.github.io/Setvice/` |
-| Production Vercel project | `abservice-leads-v2` |
-| Current Vercel production | `dpl_9QJvwSs9GsiU2tAyxFTf6tLgvhfw` |
-| Vercel rollback | `dpl_F4Umk6QvmjUqhjTXZP7awRuNrTdq` |
+| Production Vercel project | `abservice-leads-v2` (customer-owned **ABSERV**) |
+| Vercel orgId | `team_fTf8vpbA6AupEf6fICqKg3uE` |
+| Current Vercel production | `dpl_EuipM5N3SzdRdjS6R98kLA88RnPs` |
+| Vercel rollback | `dpl_9QJvwSs9GsiU2tAyxFTf6tLgvhfw` |
 | OAuth App | Company-owned GitHub OAuth App on **ABS-Bear** |
 | CMS production auth | **Operational** |
 | Telegram CRM | **Operational** |
@@ -42,7 +43,7 @@ Do **not** `GET /api/lead` in production.
 | GitHub repository | `ABS-Bear/Setvice` | Customer Owner; contractor **Admin** or **Write** as needed; marketer **Write** only (outside collaborator is enough) |
 | GitHub Pages | `https://abs-bear.github.io/Setvice/` | Follows `main` via `.github/workflows/deploy-pages.yml` |
 | GitHub OAuth App | Org-owned app on ABS-Bear (CMS login) | Customer/company org admin. Callback: `https://abservice-leads-v2.vercel.app/api/cms-callback` |
-| Vercel project | `abservice-leads-v2` | See ownership follow-up below |
+| Vercel project | `abservice-leads-v2` in customer Hobby **ABSERV** (`team_fTf8vpbA6AupEf6fICqKg3uE`) | Customer Owner (`abs-bear`); contractor only when invited |
 | Telegram bot | Company bot used by `/api/lead` | Company Owner; contractor only when rotating token/webhook |
 | Telegram CRM group | Company operations chat | Company CRM operators; contractor only for incidents |
 | CMS | `https://abs-bear.github.io/Setvice/admin/` | Marketer via GitHub **Write** on `Setvice` |
@@ -51,13 +52,18 @@ Do **not** `GET /api/lead` in production.
 
 No tokens, client secrets or passwords belong in this table or anywhere in git.
 
-## Vercel ownership follow-up (not a production blocker)
+## Vercel ownership
 
-The live project `abservice-leads-v2` is currently in Vercel scope **`alecmonopoly84-2297s-projects`**. That is **not** a customer-owned team.
+The live project `abservice-leads-v2` is **customer-owned**.
 
-Production works. Transferring the project (or recreating it) into a customer Vercel team is an **organizational handover follow-up**, not a reason to treat the site as incomplete. Do not invent a completed transfer.
+| | |
+|---|---|
+| Workspace | **ABSERV** (`abserv`) |
+| orgId | `team_fTf8vpbA6AupEf6fICqKg3uE` |
+| projectId | `prj_AlIcQy0l68ocUTVRjp5GdLLKAFCw` |
+| Hostname | `https://abservice-leads-v2.vercel.app` |
 
-Until that transfer, the contractor can still roll back Vercel (`docs/ROLLBACK.md`) and the company still owns GitHub, Pages, OAuth App and Telegram.
+Do not record tokens or env values here. Rollback: `docs/ROLLBACK.md`.
 
 ## First setup
 
@@ -88,7 +94,6 @@ Backend env **names** are in `docs/DEPLOYMENT.md`. Values stay only in Vercel.
 
 ## Risks / TBD
 
-- Vercel project scope is still contractor-owned (`alecmonopoly84-2297s-projects`) — follow-up transfer.
 - Bitrix24 field mapping needs real CRM pipeline details.
 - Yandex Metrika goal names should be confirmed with marketing.
 - Stationary service still needs owner-approved photos before any media is shown.
@@ -99,7 +104,6 @@ Backend env **names** are in `docs/DEPLOYMENT.md`. Values stay only in Vercel.
 
 ## Separate confirmation still required
 
-- Vercel project transfer to a customer-owned team.
 - Vercel env or Telegram webhook changes / secret rotation.
 - Real Bitrix24 lead sending.
 - Enabling Yandex Metrika.

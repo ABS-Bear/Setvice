@@ -52,24 +52,26 @@ It is not deleted. Keep it for audit and comparison.
 
 ## Production Vercel rollback
 
-Current production deployment:
+Current production deployment (customer-owned ABSERV known-good):
+
+```text
+dpl_EuipM5N3SzdRdjS6R98kLA88RnPs
+```
+
+Rollback deployment (previous production, includes CMS OAuth proxy):
 
 ```text
 dpl_9QJvwSs9GsiU2tAyxFTf6tLgvhfw
 ```
 
-Rollback deployment:
+Vercel owner is customer Hobby workspace **ABSERV** (`orgId` `team_fTf8vpbA6AupEf6fICqKg3uE`). Project: `abservice-leads-v2` / `prj_AlIcQy0l68ocUTVRjp5GdLLKAFCw`. Company and contractor can promote rollback in that project. Production rollback is a **separate deploy** decision.
 
-```text
-dpl_F4Umk6QvmjUqhjTXZP7awRuNrTdq
-```
-
-Company and contractor can promote the rollback deployment in the Vercel project `abservice-leads-v2` (current scope: `alecmonopoly84-2297s-projects`). Production rollback is a **separate deploy** decision.
+`dpl_F4Umk6QvmjUqhjTXZP7awRuNrTdq` is still in history but is **not** a full rollback: it has Gate 3C webhook security and post-cutover CORS, and **no** CMS OAuth proxy.
 
 To roll back the live function:
 
-1. Promote / redeploy `dpl_F4Umk6QvmjUqhjTXZP7awRuNrTdq` (or another owner-approved known-good deployment).
-2. `dpl_F4Umk6QvmjUqhjTXZP7awRuNrTdq` already includes Gate 3C webhook security and post-cutover CORS (`https://abs-bear.github.io` only). It does **not** include the CMS OAuth proxy. After this rollback, `/Setvice/admin/` GitHub login will fail until the current deployment is restored.
+1. Promote / redeploy `dpl_9QJvwSs9GsiU2tAyxFTf6tLgvhfw` (or another owner-approved known-good deployment that includes `/api/cms-auth` and `/api/cms-callback`).
+2. Do not promote `dpl_F4Umk6QvmjUqhjTXZP7awRuNrTdq` if CMS login must keep working.
 3. Do **not** remove Telegram `secret_token` or delete Vercel `TELEGRAM_WEBHOOK_SECRET` while Gate 3C code is live.
 4. Frontend lead POST does not depend on the webhook header; do not change form code during rollback.
 5. Do not `GET /api/lead` as a rollback tool.
