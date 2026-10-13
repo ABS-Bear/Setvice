@@ -4,17 +4,17 @@
   "lead": "Выезд на объект, диагностика, ремонт и работа сервисной команды рядом с техникой клиента.",
   "items": [
     {
-      "image": "/media/hero-abservice.jpg",
+      "image": "/Setvice/media/сайт-2.jpg",
       "alt": "Сервис спецтехники на объекте",
       "caption": "Выезд на объект"
     },
     {
-      "image": "/media/diag-repair-abservice.jpg",
+      "image": "/Setvice/media/сайт-4.jpg",
       "alt": "Работа с экскаватором",
       "caption": "Диагностика и ремонт"
     },
     {
-      "image": "/media/team-abservice.jpg",
+      "image": "/Setvice/media/сайт-6.jpg",
       "alt": "Команда на строительном объекте",
       "caption": "Сервисная команда"
     }
